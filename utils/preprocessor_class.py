@@ -144,14 +144,14 @@ class PreprocessorClass(L.LightningDataModule):
             # y dewasa
             # y.append([0,0,1,0])
 
-            if row == 4:
-                print("\n")
-                print("row = ", row)
-                print("label = ", label)
-                print("x = ", f"{title} {lyric}")
-                print("y = ", binary_lbl)
-            #     # sys.exit()
-                break
+            # if row == 4:
+            #     print("\n")
+            #     print("row = ", row)
+            #     print("label = ", label)
+            #     print("x = ", f"{title} {lyric}")
+            #     print("y = ", binary_lbl)
+            #     sys.exit()
+            #     break
 
         # Mengubah list ke tensor
         x_input_ids = torch.tensor(x_input_ids)
@@ -184,6 +184,9 @@ class PreprocessorClass(L.LightningDataModule):
         # print("val_set = ", val_set)
         # print("test_set = ", test_set)
         # sys.exit()
+        
+        if not os.path.exists(self.preprocessed_dir):
+            os.makedirs(self.preprocessed_dir)
         
         # f untuk merubah ke string
         torch.save(train_set, f"{self.preprocessed_dir}/train.pt")
