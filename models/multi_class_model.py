@@ -70,8 +70,8 @@ class MultiClassModel(L.LightningModule):
         # layer 12
 
         # dimensi pooler output = 1 * 768
-        lm_out = lm_out.pooler_output   #ambil output layer terakhir
-        out = self.dropout(lm_out)  #menghilangkan memory
+        bert_out = bert_out.pooler_output   #ambil output layer terakhir
+        out = self.dropout(bert_out)  #menghilangkan memory
 
         # pre classifier untuk mentransfer wight output ke epch selanjuntya
         out = self.pre_classifier(out)     #pindah ke memori khusus klasifikasi

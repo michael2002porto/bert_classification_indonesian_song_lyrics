@@ -8,7 +8,7 @@ import re
 
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 
-import pytorch_lightning as pl
+import lightning as L
 import pandas as pd
 
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
@@ -17,7 +17,7 @@ from transformers import BertTokenizer
 # untuk membuat progress bar
 from tqdm import tqdm 
 
-class PreprocessorClass(pl.LightningDataModule):
+class PreprocessorClass(L.LightningDataModule):
     # 1. def __init__()
     # 2. def setup()
 
@@ -144,14 +144,14 @@ class PreprocessorClass(pl.LightningDataModule):
             # y dewasa
             # y.append([0,0,1,0])
 
-            # if row == 4:
-            #     print("\n")
-            #     print("row = ", row)
-            #     print("label = ", label)
-            #     print("x = ", f"{title} {lyric}")
-            #     print("y = ", binary_lbl)
+            if row == 4:
+                print("\n")
+                print("row = ", row)
+                print("label = ", label)
+                print("x = ", f"{title} {lyric}")
+                print("y = ", binary_lbl)
             #     # sys.exit()
-            #     break
+                break
 
         # Mengubah list ke tensor
         x_input_ids = torch.tensor(x_input_ids)
@@ -212,44 +212,40 @@ class PreprocessorClass(pl.LightningDataModule):
         return train_data, valid_data, test_data
 
     def setup(self, stage = None):
-        train_data, valid_data, test_data = self.preprocessor()
-        # print(valid_data)
-        # fit = training
-        # predict = testing
-        if stage == "fit":
-            self.train_data = train_data
-            self.valid_data = valid_data
-        elif stage == "predict":
-            self.test_data = test_data
+        # 100% data
+        # 80% = Training
+        # 20% = Testing
         
+        train_set, val_set, test_set = self.preprocessor()
+        
+        if stage == "fit":
+            self.train_data = train_set
+            self.val_data = val_set
+        elif stage == "test":
+            self.test_data = test_set
+
     def train_dataloader(self):
-        sampler = RandomSampler(self.train_data)
         return DataLoader(
-            dataset = self.train_data,
-            # Membagi process training dalam sekali proses
+            self.train_data, 
             batch_size = self.batch_size, 
-            sampler = sampler,
-            num_workers = 4
+            shuffle = True,
+            num_workers = 4,
         )
-    
+
     def val_dataloader(self):
-        sampler = SequentialSampler(self.valid_data)
         return DataLoader(
-            dataset = self.valid_data,
-            # Membagi process training dalam sekali proses
-            batch_size = self.batch_size, 
-            sampler = sampler,
-            num_workers = 4
+            self.val_data,
+            batch_size = self.batch_size,
+            shuffle = False,
+            num_workers = 4,
         )
-    
-    def predict_dataloader(self):
-        sampler = SequentialSampler(self.test_data)
+
+    def test_dataloader(self):
         return DataLoader(
-            dataset = self.test_data,
-            # Membagi process training dalam sekali proses
-            batch_size = self.batch_size, 
-            sampler = sampler,
-            num_workers = 4
+            self.test_data,
+            batch_size = self.batch_size,
+            shuffle = False,
+            num_workers = 4,
         )
 
 # if __name__ == '__main__':

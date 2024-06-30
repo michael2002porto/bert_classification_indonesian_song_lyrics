@@ -37,7 +37,7 @@ if __name__ == '__main__':
     )
 
     model = MultiClassModel(
-        n_out = 5,
+        n_out = 4,
         dropout = 0.3,  # dropout tentuin sendiri
         lr = 1e-5   # 1e-3 = 0.0001
     )
