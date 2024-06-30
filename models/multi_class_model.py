@@ -164,7 +164,7 @@ class MultiClassModel(L.LightningModule):
         )
 
         #y_pred semakin salah, maka semakin tinggi loss
-        loss = self.criterion(out, target = y.float())
+        loss = self.criterion(y_pred, target = y.float())
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
@@ -185,7 +185,7 @@ class MultiClassModel(L.LightningModule):
         )
 
         #y_pred semakin salah, maka semakin tinggi loss
-        loss = self.criterion(out, target = y.float())
+        loss = self.criterion(y_pred, target = y.float())
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
@@ -206,7 +206,7 @@ class MultiClassModel(L.LightningModule):
         )
 
         #y_pred semakin salah, maka semakin tinggi loss
-        loss = self.criterion(out, target = y.float())
+        loss = self.criterion(y_pred, target = y.float())
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
