@@ -89,7 +89,7 @@ class MultiClassModel(L.LightningModule):
         return out
 
     def prepare_metrics(self):
-        task = "binary"
+        task = "multiclass"
         
         self.acc_metrics = Accuracy(task = task, num_classes = self.num_classes)
         
