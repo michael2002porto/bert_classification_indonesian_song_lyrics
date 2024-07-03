@@ -90,18 +90,8 @@ class MultiClassModel(L.LightningModule):
 
     def prepare_metrics(self):
         task = "multiclass"
-
-        # num_labels untuk mengetahui hasil akurasi setiap label secara terpisah
-        #     'semua usia': 0,
-        #     'anak': 1,
-        #     'remaja': 2,
-        #     'dewasa': 3
         
         self.acc_metrics = Accuracy(task = task, num_classes = self.num_classes)
-        self.acc_metrics_0 = Accuracy(task = task, num_classes = self.num_classes, num_labels = 0)
-        self.acc_metrics_1 = Accuracy(task = task, num_classes = self.num_classes, num_labels = 1)
-        self.acc_metrics_2 = Accuracy(task = task, num_classes = self.num_classes, num_labels = 2)
-        self.acc_metrics_3 = Accuracy(task = task, num_classes = self.num_classes, num_labels = 4)
         
         self.f1_metrics_micro = F1Score(task = task, num_classes = self.num_classes, average = "micro")
         self.f1_metrics_macro = F1Score(task = task, num_classes = self.num_classes, average = "macro")
@@ -138,13 +128,7 @@ class MultiClassModel(L.LightningModule):
         target = torch.argmax(target, dim = 1)
         
         metrics = {}
-
         metrics["accuracy"] = self.acc_metrics(pred, target)
-        metrics["accuracy_all_ages"] = self.acc_metrics_0(pred, target)
-        metrics["accuracy_children"] = self.acc_metrics_1(pred, target)
-        metrics["accuracy_adolescent"] = self.acc_metrics_2(pred, target)
-        metrics["accuracy_adult"] = self.acc_metrics_3(pred, target)
-
         metrics["f1_micro"] = self.f1_metrics_micro(pred, target)
         metrics["f1_macro"] = self.f1_metrics_macro(pred, target)
         metrics["f1_weighted"] = self.f1_metrics_weighted(pred, target)
@@ -184,6 +168,8 @@ class MultiClassModel(L.LightningModule):
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
+
+        print(metrics["accuracy"].plot())
         
         self.training_step_output.append(metrics)
         self.log_dict(metrics, prog_bar = True, on_epoch = True)
