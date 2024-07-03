@@ -91,7 +91,7 @@ class MultiClassModel(L.LightningModule):
     def prepare_metrics(self):
         task = "multiclass"
         
-        self.acc_metrics = Accuracy(task = task, num_classes = self.num_classes)
+        self.acc_metrics = Accuracy(task = task, num_classes = self.num_classes, multidim_average = "samplewise")
         
         self.f1_metrics_micro = F1Score(task = task, num_classes = self.num_classes, average = "micro")
         self.f1_metrics_macro = F1Score(task = task, num_classes = self.num_classes, average = "macro")
@@ -129,6 +129,8 @@ class MultiClassModel(L.LightningModule):
         
         metrics = {}
         metrics["accuracy"] = self.acc_metrics(pred, target)
+        print(metrics["accuracy"])
+        sys.exit()
         metrics["f1_micro"] = self.f1_metrics_micro(pred, target)
         metrics["f1_macro"] = self.f1_metrics_macro(pred, target)
         metrics["f1_weighted"] = self.f1_metrics_weighted(pred, target)
