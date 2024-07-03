@@ -15,7 +15,7 @@ class MultiClassModel(L.LightningModule):
                  n_out,
                  lr,
                  hidden_size = 768,
-                 model_dim = 512,):
+                 model_dim = 768,):
         super(MultiClassModel, self).__init__()
 
         # seed untuk weight
