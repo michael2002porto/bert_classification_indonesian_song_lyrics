@@ -124,8 +124,8 @@ class MultiClassModel(L.LightningModule):
         y_pred -> [1, 0, 0, 0, 0]
         '''
         
-        # pred = torch.argmax(pred, dim = 1)
-        target = torch.argmax(target, dim = 1)
+        pred = torch.argmax(pred, dim = 1)
+        # target = torch.argmax(target, dim = 1)
         
         metrics = {}
         metrics["accuracy"] = self.acc_metrics(pred, target)
