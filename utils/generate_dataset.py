@@ -1,6 +1,7 @@
 import sys
 import json
 import pandas as pd
+from tqdm import tqdm
 
 # access the parent folder
 sys.path.append(".")
@@ -21,13 +22,16 @@ if __name__ == '__main__':
         'adult': 'dewasa'
     }
 
+    total_songs = 100 * 4  # Total number of songs to generate (100 per label)
+    pbar = tqdm(total=total_songs, desc="Generating songs")
+
     for key, value in label.items():
         num_songs_per_label = 0
 
         while num_songs_per_label < 100:
             get_album = GetAlbum(age_class_tag = key, num_songs = 10, seen_titles = seen_english_titles)
             english_album = get_album.setup()
-            print(english_album)
+            # print(english_album)
 
             generated_english_album = json.loads(english_album)
 
@@ -37,7 +41,7 @@ if __name__ == '__main__':
 
             translate_album = TranslateAlbum(english_album = english_album)
             indonesian_album = translate_album.setup()
-            print(indonesian_album)
+            # print(indonesian_album)
 
             # with open("data/generated_lyrics.json", "w") as outfile:
             #     json.dump(json.loads(indonesian_album), outfile)
@@ -58,7 +62,9 @@ if __name__ == '__main__':
                 songs_data.append(song_dict)
                 num_songs_per_label += 1
                 i += 1
+                pbar.update(1)
 
+    pbar.close()
     df = pd.DataFrame(songs_data)
 
     # Save DataFrame to Excel file
