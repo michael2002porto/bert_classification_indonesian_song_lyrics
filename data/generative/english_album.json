@@ -1,0 +1,309 @@
+{
+    "title": "Album",
+    "age_class_tag": "Adult",
+    "songs": [
+        {
+            "title": "Lost in the Moment",
+            "lyric": [
+                "I close my eyes and let the music play",
+                "The rhythm takes me to a brand new day",
+                "I let go of my worries, let my heart sway",
+                "In the silence, I find my way",
+                "The world outside fades away",
+                "As I lose myself in the melody",
+                "My heart beats fast, my soul feels free",
+                "In this moment, I am me",
+                "No fears, no doubts, just pure ecstasy",
+                "I'm lost in the moment, it's where I'm free",
+                "My heart is full, my spirit is high",
+                "I'm one with the music, I feel alive",
+                "In this moment, I am complete",
+                "My soul is on fire, my heart skips a beat",
+                "I'm lost in the moment, it's where I belong",
+                "Where the music takes me, is where I am strong"
+            ]
+        },
+        {
+            "title": "Fading Away",
+            "lyric": [
+                "I'm standing still, but I'm losing ground",
+                "The world is moving fast, and I'm spinning round",
+                "I try to hold on, but it's slipping away",
+                "Like grains of sand, my time is fading away",
+                "I'm searching for a light, in the dark of night",
+                "A guiding star, to shine a beacon bright",
+                "I'm reaching out, but nobody's in sight",
+                "I'm left to face, the darkness of the night",
+                "I'm fading away, like a dying ember",
+                "My heart is breaking, my soul is surrendering",
+                "I'm losing myself, in the shadows of my mind",
+                "I'm fading away, and I'm left behind",
+                "I'm disappearing, like a ghost in the night",
+                "I'm fading away, without a fight",
+                "I'm losing my grip, on the edge of the light"
+            ]
+        },
+        {
+            "title": "Whispers in the Dark",
+            "lyric": [
+                "I hear the whispers, in the dead of night",
+                "A gentle breeze, that carries a lonely light",
+                "It's a soft reminder, of the love that's true",
+                "A whispered promise, that only I can do",
+                "In the silence, I hear a gentle voice",
+                "A comforting sound, that makes my heart rejoice",
+                "It's a reminder, of the love that's real",
+                "A whispered truth, that I can always feel",
+                "The darkness fades, as the light takes hold",
+                "The whispers grow, to a love that's bold",
+                "In the stillness, I hear a loving tone",
+                "A whispered message, that's only known",
+                "To the heart that beats, with a love so true",
+                "The whispers in the dark, are whispers to you",
+                "A love that's pure, a love that's kind",
+                "A whispered promise, that's forever on my mind"
+            ]
+        },
+        {
+            "title": "Shadows on the Wall",
+            "lyric": [
+                "I see the shadows, on the wall tonight",
+                "A silhouette of memories, that haunt my sight",
+                "They dance and whisper, in the flickering light",
+                "A reminder of the past, that I can't ignite",
+                "The shadows grow, as the darkness falls",
+                "A reflection of my heart, that beats with walls",
+                "I try to shake them, but they linger on",
+                "A haunting reminder, of the love that's gone",
+                "The shadows whisper secrets, of the heart's deep pain",
+                "A lonely echo, that refuses to wane",
+                "I'm trapped in the darkness, with the shadows on the wall",
+                "A prisoner of my heart, that's lost its way to fall",
+                "The shadows loom, like a ghostly figure tall",
+                "A haunting presence, that refuses to let me be at all",
+                "I'm searching for a light, to chase the shadows away"
+            ]
+        },
+        {
+            "title": "Forever Mine",
+            "lyric": [
+                "You're the sunshine, that brightens up my day",
+                "The stars that twinkle, in a love that's here to stay",
+                "You're the rhythm, that makes my heart sing",
+                "The melody that whispers, 'you're my everything'",
+                "You're the missing piece, that makes me whole",
+                "The love that I've been searching for, my heart's goal",
+                "You're the safe haven, where I can be free",
+                "The love that I've been dreaming of, forever mine to see",
+                "In your eyes, I see a love so true",
+                "A love that's pure, a love that's only meant for you",
+                "You're the love that I've been searching for",
+                "The one that I've been waiting for, forever more",
+                "You're the missing piece, that makes me complete",
+                "The love that I've been searching for, my heart skips a beat",
+                "You're forever mine, my heart beats for you"
+            ]
+        },
+        {
+            "title": "Ghost of You",
+            "lyric": [
+                "I see your smile, in the morning light",
+                "A fleeting glimpse, of a love that's lost its sight",
+                "I hear your laughter, in the silence of the night",
+                "A haunting echo, of a love that's lost its fight",
+                "I feel your touch, in the emptiness I feel",
+                "A ghostly presence, that refuses to heal",
+                "I'm searching for a way, to let you go",
+                "But the ghost of you, it still lingers on",
+                "I'm trying to move on, but I'm stuck in the past",
+                "The ghost of you, it still haunts me at last",
+                "I'm searching for a way, to break the chains",
+                "But the ghost of you, it still remains",
+                "I'm trying to be free, but I'm trapped in the pain",
+                "The ghost of you, it still drives me insane",
+                "I'm searching for a way, to let you go"
+            ]
+        },
+        {
+            "title": "Love in the Dark",
+            "lyric": [
+                "I'm searching for a love, that's real and true",
+                "A love that's pure, a love that shines through",
+                "In the darkness, I'm searching for a light",
+                "A guiding star, that leads me through the night",
+                "I'm reaching out, for a love that's kind",
+                "A love that's gentle, a love that's on my mind",
+                "I'm searching for a love, that's meant to be",
+                "A love that's forever, a love that's meant for me",
+                "In the shadows, I'm searching for a heart",
+                "A love that beats, a love that sets me apart",
+                "I'm searching for a love, that's real and true",
+                "A love that's pure, a love that shines through",
+                "In the darkness, I'm searching for a light",
+                "A guiding star, that leads me through the night",
+                "I'm searching for a love, that's meant to be"
+            ]
+        },
+        {
+            "title": "Fires in the Night",
+            "lyric": [
+                "The fires burn, in the darkness of the night",
+                "A passion that's fierce, a love that's alight",
+                "The flames that flicker, they dance and they sway",
+                "A burning desire, that refuses to stray",
+                "The heat that it brings, it warms my soul",
+                "A love that's pure, a love that makes me whole",
+                "The fires that burn, they light up the way",
+                "A guiding light, that leads me through the day",
+                "The flames that flicker, they whisper my name",
+                "A love that's true, a love that's forever the same",
+                "The fires that burn, they burn so bright",
+                "A love that's fierce, a love that's my guiding light",
+                "The flames that flicker, they warm my heart",
+                "A love that's pure, a love that sets me apart",
+                "The fires that burn, they burn so bright"
+            ]
+        },
+        {
+            "title": "Heartbeat of the City",
+            "lyric": [
+                "The city pulses, with a rhythm so bright",
+                "A heartbeat that's fierce, a love that's in sight",
+                "The streets that I walk, they whisper my name",
+                "A city that's alive, a love that's not tamed",
+                "The lights that shine bright, they guide me through the night",
+                "A city that's awake, a love that's feeling right",
+                "The heartbeat of the city, it beats like a drum",
+                "A rhythm that's wild, a love that's never numb",
+                "The city that I love, it's where I come alive",
+                "A heartbeat that's strong, a love that thrives",
+                "The streets that I walk, they whisper my name",
+                "A city that's alive, a love that's not tamed",
+                "The heartbeat of the city, it beats like a drum",
+                "A rhythm that's wild, a love that's never numb",
+                "The city that I love, it's where I come alive"
+            ]
+        },
+        {
+            "title": "Lost and Found",
+            "lyric": [
+                "I was lost in the darkness, with no direction to follow",
+                "A heart that was broken, with a soul that was hollow",
+                "But then I found you, and my heart started to mend",
+                "A love that was pure, a love that would never end",
+                "I was lost in the shadows, with no light to guide me",
+                "A heart that was searching, for a love that would set me free",
+                "But then I found you, and my heart started to soar",
+                "A love that was true, a love that I'd been searching for",
+                "I was lost and alone, but now I'm found",
+                "A heart that's full, a love that's turned me around",
+                "I was lost in the darkness, but now I see the light",
+                "A love that's pure, a love that's my guiding light",
+                "I was lost and alone, but now I'm found",
+                "A heart that's full, a love that's turned me around",
+                "I was lost, but now I'm found"
+            ]
+        },
+        {
+            "title": "Shattered Dreams",
+            "lyric": [
+                "I had a dream, of a love that was true",
+                "A heart that was full, a love that shone through",
+                "But now it's shattered, like a broken glass",
+                "A heart that's broken, a love that will never last",
+                "I had a dream, of a love that was real",
+                "A heart that was pure, a love that would always feel",
+                "But now it's shattered, like a broken heart",
+                "A love that's lost, a love that's torn apart",
+                "I'm left with the pieces, of a love that's gone",
+                "A heart that's broken, a love that's moved on",
+                "I had a dream, of a love that was true",
+                "A heart that was full, a love that shone through",
+                "But now it's shattered, like a broken glass",
+                "A heart that's broken, a love that will never last",
+                "I'm left with the pieces, of a love that's gone"
+            ]
+        },
+        {
+            "title": "Forever Lost",
+            "lyric": [
+                "I'm forever lost, in the darkness of my mind",
+                "A heart that's searching, for a love that's left behind",
+                "I'm forever lost, in the shadows of my past",
+                "A heart that's haunted, by a love that will never last",
+                "I'm forever lost, in the silence of the night",
+                "A heart that's whispering, a love that's out of sight",
+                "I'm forever lost, in the emptiness I feel",
+                "A heart that's searching, for a love that's real",
+                "I'm forever lost, in the darkness of my soul",
+                "A heart that's searching, for a love that makes me whole",
+                "I'm forever lost, in the shadows of my mind",
+                "A heart that's searching, for a love that's left behind",
+                "I'm forever lost, in the silence of the night",
+                "A heart that's whispering, a love that's out of sight",
+                "I'm forever lost, in the emptiness I feel"
+            ]
+        },
+        {
+            "title": "Love's a Game",
+            "lyric": [
+                "Love's a game, that we play so well",
+                "A game of hearts, where we dare to tell",
+                "The secrets we keep, the lies we tell",
+                "A game of love, where we dare to dwell",
+                "We play the cards, that we're dealt with care",
+                "A game of love, where we dare to share",
+                "The risks we take, the chances we make",
+                "A game of love, where we dare to partake",
+                "Love's a game, that we play so well",
+                "A game of hearts, where we dare to tell",
+                "The secrets we keep, the lies we tell",
+                "A game of love, where we dare to dwell",
+                "We play the cards, that we're dealt with care",
+                "A game of love, where we dare to share",
+                "The risks we take, the chances we make",
+                "A game of love, where we dare to partake"
+            ]
+        },
+        {
+            "title": "In the Silence",
+            "lyric": [
+                "In the silence, I hear your voice",
+                "A whisper in the darkness, a heartfelt choice",
+                "In the silence, I feel your touch",
+                "A gentle caress, a love that's so much",
+                "In the silence, I see your face",
+                "A vision of beauty, a love that's in its place",
+                "In the silence, I hear your heart",
+                "A beat that's in rhythm, a love that will never depart",
+                "In the silence, I feel your love",
+                "A love that's pure, a love that's sent from above",
+                "In the silence, I hear your voice",
+                "A whisper in the darkness, a heartfelt choice",
+                "In the silence, I feel your touch",
+                "A gentle caress, a love that's so much",
+                "In the silence, I see your face",
+                "A vision of beauty, a love that's in its place"
+            ]
+        },
+        {
+            "title": "Ghosts of Our Past",
+            "lyric": [
+                "We're haunted by the ghosts, of our past",
+                "The memories that linger, the love that will forever last",
+                "We're trapped in the shadows, of what used to be",
+                "A love that's lost, a love that's lost its energy",
+                "We're searching for a way, to break the chains",
+                "To free ourselves from the pain, and the love that remains",
+                "We're trying to move on, but it's hard to let go",
+                "The ghosts of our past, they still linger and grow",
+                "We're haunted by the memories, of what used to be",
+                "A love that's lost, a love that's lost its energy",
+                "We're searching for a way, to break the chains",
+                "To free ourselves from the pain, and the love that remains",
+                "We're trying to move on, but it's hard to let go",
+                "The ghosts of our past, they still linger and grow"
+            ]
+        }
+    ]
+}

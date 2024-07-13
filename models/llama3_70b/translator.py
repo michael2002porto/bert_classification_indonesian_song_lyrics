@@ -26,20 +26,20 @@ class Album(BaseModel):
     # songs: List[Song]
 
 
-def get_album(age_class_tag: str) -> Album:
+def translate_album(english_album) -> Album:
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "system",
-                "content": "You are a creative songwriter tasked with producing an album containing 20 unique songs."
-                f" Each song should have a different title and exactly 16 unique lyric lines.\n"
+                "content": "You are a professional song translator tasked with translating English album to Indonesian album."
+                f" Preserving the original meaning and flow of the lyrics.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format."
                 f" The JSON object must use the schema: {json.dumps(Album.schema(), indent=2)}",
             },
             {
                 "role": "user",
-                "content": f"Fetch an album for {age_class_tag}",
+                "content": f"Translate this JSON album: {json.dumps(english_album)}",
             },
         ],
         model="llama3-70b-8192",
@@ -52,6 +52,7 @@ def get_album(age_class_tag: str) -> Album:
     return chat_completion.choices[0].message.content
 
 
-album = get_album("adult")
+english_album = json.load(open("data/generative/english_album.json"))
+indonesian_album = translate_album(english_album)
 # print_album(album)
-print(album)
+print(indonesian_album)
