@@ -26,20 +26,22 @@ class Album(BaseModel):
     # songs: List[Song]
 
 
-def get_album(age_class_tag: str) -> Album:
+def synthesize_album(age_class_tag: str) -> Album:
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "system",
-                "content": "You are an Indonesian creative songwriter tasked with producing an album containing 20 unique songs."
-                f" Each song should have a different title and exactly 12 unique lyric lines.\n"
+                "content": f"You are an Indonesian creative songwriter tasked with producing an album containing {num_songs} unique songs."
+                f" You will produce multiple unique songs based on this existing dataset: {json.dumps()}."
+                f" Each song should have a different title and exactly 16 unique lyric lines."
+                f" You need to create distinct song titles and lyrics for four age categories: children, adolescent, adult, and all ages.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format."
                 f" The JSON object must use the schema: {json.dumps(Album.schema(), indent=2)}",
             },
             {
                 "role": "user",
-                "content": f"Fetch an album for {age_class_tag} in Indonesian language",
+                "content": f"Synthesize an Indonesian album for {age_class_tag}.",
             },
         ],
         model="llama3-70b-8192",
@@ -52,6 +54,19 @@ def get_album(age_class_tag: str) -> Album:
     return chat_completion.choices[0].message.content
 
 
-album = get_album("adult")
-# print_album(album)
-print(album)
+class SynthesizeAlbum():
+    # 1. def __init__()
+    # 2. def setup()
+
+    def __init__(self, age_class_tag = "adult", num_songs = 20, seen_titles = set()):
+        super(SynthesizeAlbum, self).__init__()
+        self.age_class_tag = age_class_tag
+        self.num_songs = num_songs
+        self.seen_titles = seen_titles
+
+    def setup(self):
+        return get_album(self.age_class_tag, self.num_songs, self.seen_titles)
+
+
+# album = synthesize_album("adult")
+# print(album)
