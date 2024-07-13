@@ -10,28 +10,54 @@ from models.llama3_70b.translator import TranslateAlbum
 
 if __name__ == '__main__':
     songs_data = []
+    seen_english_titles = set()  # To track seen titles
+    seen_indonesian_titles = set()  # To track seen titles
+    i = 1
 
-    get_album = GetAlbum(age_class_tag = "children", num_songs = 10)
-    english_album = get_album.setup()
-    print(english_album)
+    label = {
+        'all ages': 'semua usia',
+        'children': 'anak',
+        'adolescent': 'remaja',
+        'adult': 'dewasa'
+    }
 
-    translate_album = TranslateAlbum(english_album = english_album)
-    indonesian_album = translate_album.setup()
-    print(indonesian_album)
+    for key, value in label.items():
+        num_songs_per_label = 0
 
-    # with open("data/generated_lyrics.json", "w") as outfile:
-    #     json.dump(json.loads(indonesian_album), outfile)
+        while num_songs_per_label < 5:
+            get_album = GetAlbum(age_class_tag = key, num_songs = 2, seen_titles = seen_english_titles)
+            english_album = get_album.setup()
+            print(english_album)
 
-    generated_album = json.loads(indonesian_album)
+            generated_english_album = json.loads(english_album)
 
-    for i, song in enumerate(generated_album["songs"], start = 1):
-        song_dict = {
-            "No": i,
-            "Title": song["title"],
-            "Lyric": " ".join(song["lyric"]),
-            "Age Class tag": "anak"
-        }
-        songs_data.append(song_dict)
+            for song in generated_english_album["songs"]:
+                if song["title"] not in seen_english_titles:
+                    seen_english_titles.add(song["title"])
+
+            translate_album = TranslateAlbum(english_album = english_album)
+            indonesian_album = translate_album.setup()
+            print(indonesian_album)
+
+            # with open("data/generated_lyrics.json", "w") as outfile:
+            #     json.dump(json.loads(indonesian_album), outfile)
+
+            generated_indonesian_album = json.loads(indonesian_album)
+
+            for song in generated_indonesian_album["songs"]:
+                if song["title"] in seen_indonesian_titles:
+                    continue
+
+                seen_indonesian_titles.add(song["title"])
+                song_dict = {
+                    "No": i,
+                    "Title": song["title"],
+                    "Lyric": " ".join(song["lyric"]),
+                    "Age Class tag": value
+                }
+                songs_data.append(song_dict)
+                num_songs_per_label += 1
+                i += 1
 
     df = pd.DataFrame(songs_data)
 

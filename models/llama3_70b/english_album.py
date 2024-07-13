@@ -26,22 +26,26 @@ class Album(BaseModel):
     # songs: List[Song]
 
 
-def get_album(age_class_tag: str, num_songs: int) -> Album:
+def get_album(age_class_tag: str, num_songs: int, seen_titles) -> Album:
+    new_prompt = ""
+    if seen_titles:
+        new_prompt = f" Do not generate these song titles again: {', '.join(seen_titles)}."
+        print(new_prompt)
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "system",
                 "content": f"You are a creative songwriter tasked with producing an album containing {num_songs} unique songs."
                 f" Each song should have a different title and exactly 16 unique lyric lines."
-                f" You create different song title and lyrics for different 4 age categories,"
-                f" such as children, adolescent, adult, and all ages.\n"
+                f" You need to create distinct song titles and lyrics for four age categories: children, adolescent, adult, and all ages.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format."
                 f" The JSON object must use the schema: {json.dumps(Album.schema(), indent=2)}",
             },
             {
                 "role": "user",
-                "content": f"Fetch an album for {age_class_tag}",
+                "content": f"Fetch an album for {age_class_tag}."
+                f"{new_prompt}",
             },
         ],
         model="llama3-70b-8192",
@@ -58,13 +62,14 @@ class GetAlbum():
     # 1. def __init__()
     # 2. def setup()
 
-    def __init__(self, age_class_tag = "adult", num_songs = 20):
+    def __init__(self, age_class_tag = "adult", num_songs = 20, seen_titles = set()):
         super(GetAlbum, self).__init__()
         self.age_class_tag = age_class_tag
         self.num_songs = num_songs
+        self.seen_titles = seen_titles
 
     def setup(self):
-        return get_album(self.age_class_tag, self.num_songs)
+        return get_album(self.age_class_tag, self.num_songs, self.seen_titles)
 
 
 # album = get_album("adult", 20)
