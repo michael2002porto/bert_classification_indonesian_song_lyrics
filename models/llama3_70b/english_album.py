@@ -32,7 +32,9 @@ def get_album(age_class_tag: str, num_songs: int) -> Album:
             {
                 "role": "system",
                 "content": f"You are a creative songwriter tasked with producing an album containing {num_songs} unique songs."
-                f" Each song should have a different title and exactly 16 unique lyric lines.\n"
+                f" Each song should have a different title and exactly 16 unique lyric lines."
+                f" You create different song title and lyrics for different 4 age categories,"
+                f" such as children, adolescent, adult, and all ages.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format."
                 f" The JSON object must use the schema: {json.dumps(Album.schema(), indent=2)}",
