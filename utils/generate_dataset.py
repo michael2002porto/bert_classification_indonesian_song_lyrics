@@ -24,8 +24,8 @@ if __name__ == '__main__':
     for key, value in label.items():
         num_songs_per_label = 0
 
-        while num_songs_per_label < 5:
-            get_album = GetAlbum(age_class_tag = key, num_songs = 2, seen_titles = seen_english_titles)
+        while num_songs_per_label < 100:
+            get_album = GetAlbum(age_class_tag = key, num_songs = 10, seen_titles = seen_english_titles)
             english_album = get_album.setup()
             print(english_album)
 
