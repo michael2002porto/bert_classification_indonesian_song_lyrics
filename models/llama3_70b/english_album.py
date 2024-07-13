@@ -29,7 +29,8 @@ class Album(BaseModel):
 def get_album(age_class_tag: str, num_songs: int, seen_titles) -> Album:
     new_prompt = ""
     if seen_titles:
-        new_prompt = f" Do not generate these song titles again: {', '.join(seen_titles)}."
+        new_prompt = f" Do not generate these song titles again: {list(seen_titles)}."
+        # new_prompt = f" Do not generate these song titles again: {', '.join(seen_titles)}."
         print(new_prompt)
     chat_completion = client.chat.completions.create(
         messages=[
