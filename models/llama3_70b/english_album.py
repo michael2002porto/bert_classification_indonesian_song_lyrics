@@ -26,12 +26,12 @@ class Album(BaseModel):
     # songs: List[Song]
 
 
-def get_album(age_class_tag: str) -> Album:
+def get_album(age_class_tag: str, num_songs: int) -> Album:
     chat_completion = client.chat.completions.create(
         messages=[
             {
                 "role": "system",
-                "content": "You are a creative songwriter tasked with producing an album containing 20 unique songs."
+                "content": f"You are a creative songwriter tasked with producing an album containing {num_songs} unique songs."
                 f" Each song should have a different title and exactly 16 unique lyric lines.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format."
@@ -52,6 +52,18 @@ def get_album(age_class_tag: str) -> Album:
     return chat_completion.choices[0].message.content
 
 
-album = get_album("adult")
-# print_album(album)
-print(album)
+class GetAlbum():
+    # 1. def __init__()
+    # 2. def setup()
+
+    def __init__(self, age_class_tag = "adult", num_songs = 20):
+        super(GetAlbum, self).__init__()
+        self.age_class_tag = age_class_tag
+        self.num_songs = num_songs
+
+    def setup(self):
+        return get_album(self.age_class_tag, self.num_songs)
+
+
+# album = get_album("adult", 20)
+# print(album)

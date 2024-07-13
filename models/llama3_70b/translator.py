@@ -52,7 +52,19 @@ def translate_album(english_album) -> Album:
     return chat_completion.choices[0].message.content
 
 
-english_album = json.load(open("data/generative/english_album.json"))
-indonesian_album = translate_album(english_album)
+class TranslateAlbum():
+    # 1. def __init__()
+    # 2. def setup()
+
+    def __init__(self, english_album = json.load(open("data/generative/english_album.json"))):
+        super(TranslateAlbum, self).__init__()
+        self.english_album = english_album
+
+    def setup(self):
+        return translate_album(self.english_album)
+
+
+# english_album = json.load(open("data/generative/english_album.json"))
+# indonesian_album = translate_album(english_album)
 # print_album(album)
-print(indonesian_album)
+# print(indonesian_album)
