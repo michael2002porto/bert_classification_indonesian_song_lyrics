@@ -29,40 +29,47 @@ if __name__ == '__main__':
         num_songs_per_label = 0
 
         while num_songs_per_label < 100:
-            get_album = GetAlbum(age_class_tag = key, num_songs = 10, seen_titles = seen_english_titles)
-            english_album = get_album.setup()
-            # print(english_album)
+            try:
+                get_album = GetAlbum(age_class_tag = key, num_songs = 10, seen_titles = seen_english_titles)
+                english_album = get_album.setup()
+                # print(english_album)
 
-            generated_english_album = json.loads(english_album)
+                generated_english_album = json.loads(english_album)
 
-            for song in generated_english_album["songs"]:
-                if song["title"] not in seen_english_titles:
-                    seen_english_titles.add(song["title"])
+                for song in generated_english_album["songs"]:
+                    if song["title"] not in seen_english_titles:
+                        seen_english_titles.add(song["title"])
 
-            translate_album = TranslateAlbum(english_album = english_album)
-            indonesian_album = translate_album.setup()
-            # print(indonesian_album)
+                translate_album = TranslateAlbum(english_album = english_album)
+                indonesian_album = translate_album.setup()
+                # print(indonesian_album)
 
-            # with open("data/generated_lyrics.json", "w") as outfile:
-            #     json.dump(json.loads(indonesian_album), outfile)
+                # with open("data/generated_lyrics.json", "w") as outfile:
+                #     json.dump(json.loads(indonesian_album), outfile)
 
-            generated_indonesian_album = json.loads(indonesian_album)
+                generated_indonesian_album = json.loads(indonesian_album)
 
-            for song in generated_indonesian_album["songs"]:
-                if song["title"] in seen_indonesian_titles:
-                    continue
+                for song in generated_indonesian_album["songs"]:
+                    if song["title"] in seen_indonesian_titles:
+                        continue
 
-                seen_indonesian_titles.add(song["title"])
-                song_dict = {
-                    "No": i,
-                    "Title": song["title"],
-                    "Lyric": " ".join(song["lyric"]),
-                    "Age Class tag": value
-                }
-                songs_data.append(song_dict)
-                num_songs_per_label += 1
-                i += 1
-                pbar.update(1)
+                    seen_indonesian_titles.add(song["title"])
+                    song_dict = {
+                        "No": i,
+                        "Title": song["title"],
+                        "Lyric": " ".join(song["lyric"]),
+                        "Age Class tag": value
+                    }
+                    songs_data.append(song_dict)
+                    num_songs_per_label += 1
+                    i += 1
+                    pbar.update(1)
+
+            except Exception as e:
+                print(f"Error processing songs: {e}")
+                # Save songs_data in case of error (optional)
+                df = pd.DataFrame(songs_data)
+                df.to_excel("data/generated_lyrics_partial.xlsx", index=False)
 
     pbar.close()
     df = pd.DataFrame(songs_data)
