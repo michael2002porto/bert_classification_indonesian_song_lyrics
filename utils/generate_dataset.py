@@ -3,6 +3,7 @@ import sys
 import json
 import pandas as pd
 from tqdm import tqdm
+from collections import deque
 
 # access the parent folder
 sys.path.append(".")
@@ -22,7 +23,8 @@ if __name__ == '__main__':
     args = collect_parser()
 
     songs_data = []
-    seen_english_titles = set()  # To track seen titles
+    seen_english_titles = deque(maxlen=100)  # To track seen titles (max limit 100)
+    seen_english_titles_all = set()  # To track seen titles
     seen_indonesian_titles = set()  # To track seen titles
     i = 1
 
@@ -54,11 +56,12 @@ if __name__ == '__main__':
                 for song in generated_english_album["songs"]:
                     # Check if adding the title would exceed the limit
                     # Karena jika seen_english_titles melebihi 100 lalu dimasukkan ke prompt, maka akan muncul error
-                    if len(seen_english_titles) >= 100:
+                    # if len(seen_english_titles) >= 100:
                         # Remove the oldest item (first element in a set)
-                        seen_english_titles.pop()
-                    if song["title"] not in seen_english_titles:
-                        seen_english_titles.add(song["title"])
+                        # seen_english_titles.pop()
+                    if song["title"] not in seen_english_titles_all:
+                        seen_english_titles.append(song["title"])
+                        seen_english_titles_all.add(song["title"])
 
                 translate_album = TranslateAlbum(english_album = english_album)
                 indonesian_album = translate_album.setup()
