@@ -52,6 +52,11 @@ if __name__ == '__main__':
                 generated_english_album = json.loads(english_album)
 
                 for song in generated_english_album["songs"]:
+                    # Check if adding the title would exceed the limit
+                    # Karena jika seen_english_titles melebihi 100 lalu dimasukkan ke prompt, maka akan muncul error
+                    if len(seen_english_titles) >= 100:
+                        # Remove the oldest item (first element in a set)
+                        seen_english_titles.pop()
                     if song["title"] not in seen_english_titles:
                         seen_english_titles.add(song["title"])
 
