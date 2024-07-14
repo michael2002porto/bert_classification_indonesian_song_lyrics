@@ -7,8 +7,7 @@ from tqdm import tqdm
 # access the parent folder
 sys.path.append(".")
 
-from models.llama3_70b.english_album import *
-from models.llama3_70b.translator import TranslateAlbum
+from models.llama3_8b.indonesian_album import SynthesizeAlbum
 
 def collect_parser():
     parser = argparse.ArgumentParser()
@@ -18,15 +17,10 @@ def collect_parser():
 
     return parser.parse_args()
 
-def convert_existing_dataset():
-    dataset = pd.read_excel("data/dataset_lyrics.xlsx")
-    dataset = dataset[["Title", "Lyric", "Age Class tag"]]
-
 if __name__ == '__main__':
     args = collect_parser()
 
     songs_data = []
-    seen_english_titles = set()  # To track seen titles
     seen_indonesian_titles = set()  # To track seen titles
     i = 1
 
@@ -45,23 +39,14 @@ if __name__ == '__main__':
 
         while num_songs_per_label < args.num_songs_per_label:
             try:
-                get_album = GetAlbum(
+                synthesize_album = SynthesizeAlbum(
                     age_class_tag = key,
                     num_songs = args.num_songs_per_llm_batch,
-                    seen_titles = seen_english_titles
+                    seen_titles = seen_indonesian_titles
                 )
-                english_album = get_album.setup()
-                # print(english_album)
-
-                generated_english_album = json.loads(english_album)
-
-                for song in generated_english_album["songs"]:
-                    if song["title"] not in seen_english_titles:
-                        seen_english_titles.add(song["title"])
-
-                translate_album = TranslateAlbum(english_album = english_album)
-                indonesian_album = translate_album.setup()
-                # print(indonesian_album)
+                indonesian_album = synthesize_album.setup()
+                print(indonesian_album)
+                sys.exit()
 
                 # with open("data/generated_lyrics.json", "w") as outfile:
                 #     json.dump(json.loads(indonesian_album), outfile)
@@ -88,11 +73,11 @@ if __name__ == '__main__':
                 print(f"Error processing songs: {e}")
                 # Save songs_data in case of error (optional)
                 df = pd.DataFrame(songs_data)
-                df.to_excel("data/generated_lyrics_partial.xlsx", index=False)
+                df.to_excel("data/synthesized_lyrics_partial.xlsx", index=False)
 
     pbar.close()
     df = pd.DataFrame(songs_data)
 
     # Save DataFrame to Excel file
-    output_file = "data/generated_lyrics.xlsx"
+    output_file = "data/synthesized_lyrics.xlsx"
     df.to_excel(output_file, index=False)
