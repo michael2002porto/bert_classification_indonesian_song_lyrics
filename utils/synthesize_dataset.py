@@ -32,7 +32,7 @@ if __name__ == '__main__':
     }
 
     total_songs = args.num_songs_per_label * 4  # Total number of songs to generate (100 per label)
-    pbar = tqdm(total=total_songs, desc="Generating songs")
+    pbar = tqdm(total=total_songs, desc="Synthesizing songs")
 
     for key, value in label.items():
         num_songs_per_label = 0
