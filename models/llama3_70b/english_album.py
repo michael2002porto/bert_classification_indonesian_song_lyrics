@@ -27,11 +27,11 @@ class Album(BaseModel):
 
 
 def get_album(age_class_tag: str, num_songs: int, seen_titles) -> Album:
-    new_prompt = ""
-    if seen_titles:
-        new_prompt = f" Do not generate these song titles again: {list(seen_titles)}."
-        # new_prompt = f" Do not generate these song titles again: {', '.join(seen_titles)}."
-        print(new_prompt)
+    # new_prompt = ""
+    # if seen_titles:
+    #     new_prompt = f" Do not generate these song titles again: {list(seen_titles)}."
+    #     # new_prompt = f" Do not generate these song titles again: {', '.join(seen_titles)}."
+    #     print(new_prompt)
     chat_completion = client.chat.completions.create(
         messages=[
             {
@@ -46,11 +46,14 @@ def get_album(age_class_tag: str, num_songs: int, seen_titles) -> Album:
             {
                 "role": "user",
                 "content": f"Fetch an album for {age_class_tag}."
-                f"{new_prompt}",
+                # f"{new_prompt}",
             },
         ],
         model="llama3-70b-8192",
-        temperature=0,
+        # Controls randomness: lowering results in less random completions.
+        # As the temperature approaches zero, the model will become deterministic
+        # and repetitive.
+        temperature=1,
         # Streaming is not supported in JSON mode
         stream=False,
         # Enable JSON mode by setting the response format

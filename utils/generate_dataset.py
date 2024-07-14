@@ -52,6 +52,7 @@ if __name__ == '__main__':
                 # print(english_album)
 
                 generated_english_album = json.loads(english_album)
+                print(seen_english_titles_all)
 
                 for song in generated_english_album["songs"]:
                     # Check if adding the title would exceed the limit

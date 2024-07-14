@@ -76,6 +76,9 @@ def synthesize_album(age_class_tag: str, num_songs: int, seen_titles, existing_d
             },
         ],
         model="llama3-70b-8192",
+        # Controls randomness: lowering results in less random completions.
+        # As the temperature approaches zero, the model will become deterministic
+        # and repetitive.
         temperature=1,
         # Streaming is not supported in JSON mode
         stream=False,
