@@ -75,8 +75,8 @@ def synthesize_album(age_class_tag: str, num_songs: int, seen_titles, existing_d
                 f" Make sure the song titles are not repeated from the existing dataset or among the newly generated songs.",
             },
         ],
-        model="llama3-8b-8192",
-        temperature=0,
+        model="llama3-70b-8192",
+        temperature=1,
         # Streaming is not supported in JSON mode
         stream=False,
         # Enable JSON mode by setting the response format
@@ -108,15 +108,16 @@ class SynthesizeAlbum():
         # Get the existing songs
         songs = existing_dataset["songs"]
 
-        # Randomly select 5 items from the songs list
-        if len(songs) >= 5:
-            selected_songs = random.sample(songs, 5)
+        # Randomly select 20 items from the songs list
+        # Karena keterbatasan prompt LLM (muncul error jika terlalu banyak)
+        if len(songs) >= 20:
+            selected_songs = random.sample(songs, 20)
         else:
             selected_songs = songs
 
         # Update the existing_dataset with the selected songs
         existing_dataset["songs"] = selected_songs
-        print(existing_dataset)
+        # print(existing_dataset)
 
         return synthesize_album(self.age_class_tag, self.num_songs, self.seen_titles, existing_dataset)
 

@@ -7,7 +7,7 @@ from tqdm import tqdm
 # access the parent folder
 sys.path.append(".")
 
-from models.llama3_8b.indonesian_album import SynthesizeAlbum
+from models.llama3_70b.indonesian_album import SynthesizeAlbum
 
 def collect_parser():
     parser = argparse.ArgumentParser()
@@ -45,13 +45,13 @@ if __name__ == '__main__':
                     seen_titles = seen_indonesian_titles
                 )
                 indonesian_album = synthesize_album.setup()
-                print(indonesian_album)
-                sys.exit()
+                # print(indonesian_album)
 
                 # with open("data/generated_lyrics.json", "w") as outfile:
                 #     json.dump(json.loads(indonesian_album), outfile)
 
                 generated_indonesian_album = json.loads(indonesian_album)
+                print(seen_indonesian_titles)
 
                 for song in generated_indonesian_album["songs"]:
                     if song["title"] in seen_indonesian_titles:
