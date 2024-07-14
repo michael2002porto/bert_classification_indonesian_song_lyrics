@@ -121,6 +121,7 @@ class PreprocessorClass(L.LightningDataModule):
             binary_lbl = [0] * len(self.label2id)
             binary_lbl[label] = 1
             
+            # membuat tokenisasi
             tkn = self.tokenizer(
                 f"{title} {lyric}", #batch_sentences
                 max_length = 200,
@@ -196,8 +197,26 @@ class PreprocessorClass(L.LightningDataModule):
         return train_set, val_set, test_set
 
     def preprocessor(self,):
-        # membersihkan dan membuat tokenisasi
+        # Menentukan dataset yang akan digunakan
         dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
+
+        if self.preprocessed_dir == "data/preprocessed/synthesized":
+            dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
+
+        if self.preprocessed_dir == "data/preprocessed/generated":
+            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+
+        if self.preprocessed_dir == "data/preprocessed/full_combination":
+            original = self.load_data(path = "data/dataset_lyrics.xlsx")
+            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            generated = self.load_data(path = "data/generated_lyrics.xlsx")
+            dataset = pd.concat([original, synthesized, generated], ignore_index=True)
+
+        if self.preprocessed_dir == "data/preprocessed/split_combination":
+            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            generated = self.load_data(path = "data/generated_lyrics.xlsx")
+            train_dataset = pd.concat([synthesized, generated], ignore_index=True)
+            test_dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
 
         # Mengecek apakah data train, valid, dan test sudah di preprocessed
         if not os.path.exists(f"{self.preprocessed_dir}/train.pt") \
