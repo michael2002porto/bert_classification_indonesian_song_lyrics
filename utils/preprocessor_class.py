@@ -74,8 +74,8 @@ class PreprocessorClass(L.LightningDataModule):
         # Menghilangkan imbuhan
         return self.stemmer.stem(string)
 
-    def load_data(self,):
-        dataset = pd.read_excel("data/dataset_lyrics.xlsx")
+    def load_data(self, path = "data/dataset_lyrics.xlsx"):
+        dataset = pd.read_excel(path)
         dataset = dataset[["Title", "Lyric", "Age Class tag"]]
         
         # Mengetahui apa saja label yang ada di dalam dataset
@@ -197,7 +197,7 @@ class PreprocessorClass(L.LightningDataModule):
 
     def preprocessor(self,):
         # membersihkan dan membuat tokenisasi
-        dataset = self.load_data()
+        dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
 
         # Mengecek apakah data train, valid, dan test sudah di preprocessed
         if not os.path.exists(f"{self.preprocessed_dir}/train.pt") \

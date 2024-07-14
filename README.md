@@ -16,5 +16,12 @@
 - adolescent = 101
 - adult = 100
 
+# PREPROCESSED
+- original: train + test
+- synthesized: train + test
+- generated: train + test
+- full_combination (original + synthesized + generated): train + test
+- split_combination: train (synthesized + generated) + test (original)
+
 
 ![image](https://github.com/user-attachments/assets/83b21a84-9729-49a8-84a3-d28f9a12ccec)
