@@ -23,7 +23,7 @@ class Song(BaseModel):
 
 class Album(BaseModel):
     age_class_tag: str
-    songs: List[Song]
+    songs: Set[Song]
     # songs: conset(Song, min_items=10, max_items=10)
     # songs: conlist(Song, min_items=10)
     # songs: List[Song]
