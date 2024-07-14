@@ -92,7 +92,7 @@ class PreprocessorClass(L.LightningDataModule):
         # sys.exit()
         
         return dataset
-    
+
     def arrange_data(self, data):
         # Yang di lakukan
         # 1. Cleaning sentence
@@ -196,6 +196,188 @@ class PreprocessorClass(L.LightningDataModule):
         
         return train_set, val_set, test_set
 
+    def arrange_train_data(self, data):
+        # Yang di lakukan
+        # 1. Cleaning sentence
+        # 2. Tokenizing data
+        # 3. Arrange ke dataset (training, validation, testing)
+
+        # type untuk tipe datanya, apakah training atau testing
+
+        # y = label
+        x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
+        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Song Lyrics"):
+            '''
+                'semua usia' = 0
+                'anak' = 1
+                'remaja' = 2
+                'dewasa' = 3
+            '''
+            
+            title = self.clean_str(data["Title"])
+            lyric = self.clean_str(data["Lyric"])
+            label = data["Age Class tag"]
+            
+            title = title.replace("lirik lagu ", "")
+
+            # Mengubah label yang tadinya angka menjadi binary
+            binary_lbl = [0] * len(self.label2id)
+            binary_lbl[label] = 1
+            
+            # membuat tokenisasi
+            tkn = self.tokenizer(
+                f"{title} {lyric}", #batch_sentences
+                max_length = 200,
+                truncation = True,
+                padding = "max_length",
+            )
+            x_input_ids.append(tkn['input_ids'])
+            x_token_type_ids.append(tkn['token_type_ids'])
+            x_attention_mask.append(tkn['attention_mask'])
+            y.append(binary_lbl)
+
+            #saya suka makan ... ...
+            #input_ids = 3,1,5,0,0
+            #attention_mask = 1,1,1,0,0
+            
+            # anak2 = 0
+            # remaja = 1
+            # dewasa = 2
+            # semua umur = 3
+
+            # y dewasa
+            # y.append([0,0,1,0])
+
+            # if row == 4:
+            #     print("\n")
+            #     print("row = ", row)
+            #     print("label = ", label)
+            #     print("x = ", f"{title} {lyric}")
+            #     print("y = ", binary_lbl)
+            #     sys.exit()
+            #     break
+
+        # Mengubah list ke tensor
+        x_input_ids = torch.tensor(x_input_ids)
+        x_token_type_ids = torch.tensor(x_token_type_ids)
+        x_attention_mask = torch.tensor(x_attention_mask)
+        y = torch.tensor(y)
+
+        tensor_dataset = TensorDataset(
+            x_input_ids,
+            x_token_type_ids,
+            x_attention_mask,
+            y
+        )
+
+        # Ratio Training 80% overall data = (90% Train, 10% Validation)
+        # Ratio Testing 20% overall data
+
+        train_len = int(x_input_ids.shape[0] * 0.9)   #100 * 0.9 = 90
+        val_len = x_input_ids.shape[0] - train_len   #100 - 90 = 10
+
+        train_set, val_set = torch.utils.data.random_split(
+            tensor_dataset,
+            [train_len, val_len]
+        )
+
+        # print("\n")
+        # print("train_set = ", train_set)
+        # print("val_set = ", val_set)
+        # print("test_set = ", test_set)
+        # sys.exit()
+        
+        if not os.path.exists(self.preprocessed_dir):
+            os.makedirs(self.preprocessed_dir)
+        
+        # f untuk merubah ke string
+        torch.save(train_set, f"{self.preprocessed_dir}/train.pt")
+        torch.save(val_set, f"{self.preprocessed_dir}/valid.pt")
+        
+        return train_set, val_set
+
+    def arrange_test_data(self, data):
+        # Yang di lakukan
+        # 1. Cleaning sentence
+        # 2. Tokenizing data
+        # 3. Arrange ke dataset (training, validation, testing)
+
+        # type untuk tipe datanya, apakah training atau testing
+
+        # y = label
+        x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
+        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Song Lyrics"):
+            '''
+                'semua usia' = 0
+                'anak' = 1
+                'remaja' = 2
+                'dewasa' = 3
+            '''
+            
+            title = self.clean_str(data["Title"])
+            lyric = self.clean_str(data["Lyric"])
+            label = data["Age Class tag"]
+            
+            title = title.replace("lirik lagu ", "")
+
+            # Mengubah label yang tadinya angka menjadi binary
+            binary_lbl = [0] * len(self.label2id)
+            binary_lbl[label] = 1
+            
+            # membuat tokenisasi
+            tkn = self.tokenizer(
+                f"{title} {lyric}", #batch_sentences
+                max_length = 200,
+                truncation = True,
+                padding = "max_length",
+            )
+            x_input_ids.append(tkn['input_ids'])
+            x_token_type_ids.append(tkn['token_type_ids'])
+            x_attention_mask.append(tkn['attention_mask'])
+            y.append(binary_lbl)
+
+            #saya suka makan ... ...
+            #input_ids = 3,1,5,0,0
+            #attention_mask = 1,1,1,0,0
+            
+            # anak2 = 0
+            # remaja = 1
+            # dewasa = 2
+            # semua umur = 3
+
+            # y dewasa
+            # y.append([0,0,1,0])
+
+            # if row == 4:
+            #     print("\n")
+            #     print("row = ", row)
+            #     print("label = ", label)
+            #     print("x = ", f"{title} {lyric}")
+            #     print("y = ", binary_lbl)
+            #     sys.exit()
+            #     break
+
+        # Mengubah list ke tensor
+        x_input_ids = torch.tensor(x_input_ids)
+        x_token_type_ids = torch.tensor(x_token_type_ids)
+        x_attention_mask = torch.tensor(x_attention_mask)
+        y = torch.tensor(y)
+
+        tensor_dataset = TensorDataset(
+            x_input_ids,
+            x_token_type_ids,
+            x_attention_mask,
+            y
+        )
+        
+        if not os.path.exists(self.preprocessed_dir):
+            os.makedirs(self.preprocessed_dir)
+        
+        # f untuk merubah ke string
+        torch.save(tensor_dataset, f"{self.preprocessed_dir}/test.pt")
+        
+        return tensor_dataset
+
     def preprocessor(self,):
         # Menentukan dataset yang akan digunakan
         dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
@@ -222,7 +404,13 @@ class PreprocessorClass(L.LightningDataModule):
         if not os.path.exists(f"{self.preprocessed_dir}/train.pt") \
             or not os.path.exists(f"{self.preprocessed_dir}/valid.pt") \
             or not os.path.exists(f"{self.preprocessed_dir}/test.pt"):
-            train_data, valid_data, test_data = self.arrange_data(data = dataset)
+
+            if self.preprocessed_dir == "data/preprocessed/split_combination":
+                train_data, valid_data = self.arrange_train_data(data = train_dataset)
+                test_data = self.arrange_test_data(data = test_dataset)
+            else:
+                train_data, valid_data, test_data = self.arrange_data(data = dataset)
+
             print("Successfully created training, validation, and testing datasets")
         else:
             print("Load Preprocessed train and validation data data")
