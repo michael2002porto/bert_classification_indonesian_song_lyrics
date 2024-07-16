@@ -42,7 +42,7 @@ def translate_album(english_album) -> Album:
                 "content": f"Translate this JSON album: {json.dumps(english_album)}",
             },
         ],
-        model="llama3-8b-8192",
+        model="llama3-70b-8192",
         temperature=0.7,
         # Streaming is not supported in JSON mode
         stream=False,
