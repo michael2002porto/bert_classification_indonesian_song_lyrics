@@ -31,8 +31,8 @@ def translate_album(english_album) -> Album:
         messages=[
             {
                 "role": "system",
-                "content": "You are a professional song translator tasked with translating English album to Indonesian album."
-                f" Preserving the original meaning and flow of the lyrics.\n"
+                "content": "You are a professional song translator tasked with translating an English album to an Indonesian album."
+                f" You need to translate both the song titles and the lyrics, preserving the original meaning and flow of the lyrics.\n"
                 # Pass the json schema to the model. Pretty printing improves results.
                 f" The output should be in JSON format and in Indonesian language."
                 f" The JSON object must use the schema: {json.dumps(Album.schema(), indent=2)}",
