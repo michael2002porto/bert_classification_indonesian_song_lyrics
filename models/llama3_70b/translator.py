@@ -43,7 +43,7 @@ def translate_album(english_album) -> Album:
             },
         ],
         model="llama3-8b-8192",
-        temperature=1,
+        temperature=0,
         # Streaming is not supported in JSON mode
         stream=False,
         # Enable JSON mode by setting the response format

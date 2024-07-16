@@ -51,18 +51,18 @@ if __name__ == '__main__':
                 english_album = get_album.setup()
                 # print(english_album)
 
-                generated_english_album = json.loads(english_album)
-                print(seen_english_titles_all)
+                # generated_english_album = json.loads(english_album)
+                # print(seen_english_titles_all)
 
-                for song in generated_english_album["songs"]:
+                # for song in generated_english_album["songs"]:
                     # Check if adding the title would exceed the limit
                     # Karena jika seen_english_titles melebihi 100 lalu dimasukkan ke prompt, maka akan muncul error
                     # if len(seen_english_titles) >= 100:
                         # Remove the oldest item (first element in a set)
                         # seen_english_titles.pop()
-                    if song["title"] not in seen_english_titles_all:
-                        seen_english_titles.append(song["title"])
-                        seen_english_titles_all.add(song["title"])
+                    # if song["title"] not in seen_english_titles_all:
+                    #     seen_english_titles.append(song["title"])
+                    #     seen_english_titles_all.add(song["title"])
 
                 translate_album = TranslateAlbum(english_album = english_album)
                 indonesian_album = translate_album.setup()
