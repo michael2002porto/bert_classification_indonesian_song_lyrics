@@ -5,7 +5,7 @@ from pydantic import BaseModel, conlist, conset
 from groq import Groq
 
 client = Groq(
-    api_key="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",
+    api_key="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",
 )
 
 
