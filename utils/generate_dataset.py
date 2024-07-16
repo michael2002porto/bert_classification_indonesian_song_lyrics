@@ -9,7 +9,7 @@ from collections import deque
 sys.path.append(".")
 
 from models.llama3_70b.english_album import *
-from models.llama3_8b.translator import TranslateAlbum
+from models.llama3_70b.translator import TranslateAlbum
 
 def collect_parser():
     parser = argparse.ArgumentParser()
