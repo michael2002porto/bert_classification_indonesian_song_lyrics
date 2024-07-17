@@ -18,7 +18,7 @@
 - adult = 100
 
 # Generated Dataset 2 (409)
-## Generate Indonesian Songs
+## Generate Indonesian Songs (Faster, but the lyrics are not creative)
 - all ages = 106
 - children = 102
 - adolescent = 101
