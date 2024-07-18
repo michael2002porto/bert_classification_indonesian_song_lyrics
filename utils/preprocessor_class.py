@@ -388,16 +388,21 @@ class PreprocessorClass(L.LightningDataModule):
         if self.preprocessed_dir == "data/preprocessed/generated":
             dataset = self.load_data(path = "data/generated_lyrics.xlsx")
 
+        if self.preprocessed_dir == "data/preprocessed/generated_2":
+            dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
+
         if self.preprocessed_dir == "data/preprocessed/full_combination":
             original = self.load_data(path = "data/dataset_lyrics.xlsx")
             synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
             generated = self.load_data(path = "data/generated_lyrics.xlsx")
-            dataset = pd.concat([original, synthesized, generated], ignore_index=True)
+            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+            dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
 
         if self.preprocessed_dir == "data/preprocessed/split_combination":
             synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
             generated = self.load_data(path = "data/generated_lyrics.xlsx")
-            train_dataset = pd.concat([synthesized, generated], ignore_index=True)
+            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+            train_dataset = pd.concat([synthesized, generated, generated_2], ignore_index=True)
             test_dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
 
         # Mengecek apakah data train, valid, dan test sudah di preprocessed
