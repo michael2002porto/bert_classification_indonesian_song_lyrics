@@ -398,6 +398,7 @@ class PreprocessorClass(L.LightningDataModule):
             generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
             dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
 
+        # Tidak perlu dipakai split_combination
         if self.preprocessed_dir == "data/preprocessed/split_combination":
             synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
             generated = self.load_data(path = "data/generated_lyrics.xlsx")
