@@ -93,6 +93,64 @@ class PreprocessorClass(L.LightningDataModule):
         
         return dataset
 
+    def load_data_paper(self, path="data/dataset_lyrics.xlsx", training_distribution="uneven", train_percent=80):
+        # Load the dataset
+        dataset = pd.read_excel(path)
+        dataset = dataset[["Title", "Lyric", "Age Class tag"]]
+
+        # Convert from text labels to numerical IDs
+        dataset["Age Class tag"] = dataset["Age Class tag"].map(self.label2id)
+
+        # Define the equitable training distribution based on the paper
+        train_distribution = {
+            self.label2id['semua usia']: train_percent,
+            self.label2id['anak']: train_percent,
+            self.label2id['remaja']: train_percent,
+            self.label2id['dewasa']: train_percent
+        }
+
+        # Define the uneven training distribution based on the paper
+        if training_distribution == "uneven":
+            if train_percent == 70:
+                train_distribution = {
+                    self.label2id['semua usia']: 85,
+                    self.label2id['remaja']: 75,
+                    self.label2id['dewasa']: 65,
+                    self.label2id['anak']: 55
+                }
+            elif train_percent == 80:
+                train_distribution = {
+                    self.label2id['anak']: 95,
+                    self.label2id['dewasa']: 85,
+                    self.label2id['remaja']: 75,
+                    self.label2id['semua usia']: 65
+                }
+            else:
+                raise ValueError("Uneven train percent must be one of 70 or 80.")
+
+        # Prepare training and testing datasets
+        train_dataframes = []
+        test_dataframes = []
+
+        for label_id, train_count in train_distribution.items():
+            label_data = dataset[dataset["Age Class tag"] == label_id]
+            train_df = label_data.sample(n=train_count, random_state=42)
+            test_df = label_data.drop(train_df.index)
+            train_dataframes.append(train_df)
+            test_dataframes.append(test_df)
+
+        # Concatenate the dataframes
+        training_set = pd.concat(train_dataframes).sample(frac=1, random_state=42).reset_index(drop=True)
+        testing_set = pd.concat(test_dataframes).sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Mengetahui apa saja label setelah dikonversi
+        print("\nTraining:")
+        print(training_set["Age Class tag"].value_counts())
+        print("\nTesting:")
+        print(testing_set["Age Class tag"].value_counts())
+
+        return training_set, testing_set
+
     def arrange_data(self, data):
         # Yang di lakukan
         # 1. Cleaning sentence
@@ -206,7 +264,7 @@ class PreprocessorClass(L.LightningDataModule):
 
         # y = label
         x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
-        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Song Lyrics"):
+        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Train Song Lyrics"):
             '''
                 'semua usia' = 0
                 'anak' = 1
@@ -270,8 +328,7 @@ class PreprocessorClass(L.LightningDataModule):
             y
         )
 
-        # Ratio Training 80% overall data = (90% Train, 10% Validation)
-        # Ratio Testing 20% overall data
+        # Ratio Training X% overall data = (90% Train, 10% Validation)
 
         train_len = int(x_input_ids.shape[0] * 0.9)   #100 * 0.9 = 90
         val_len = x_input_ids.shape[0] - train_len   #100 - 90 = 10
@@ -306,7 +363,7 @@ class PreprocessorClass(L.LightningDataModule):
 
         # y = label
         x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
-        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Song Lyrics"):
+        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Test Song Lyrics"):
             '''
                 'semua usia' = 0
                 'anak' = 1
@@ -381,16 +438,44 @@ class PreprocessorClass(L.LightningDataModule):
     def preprocessor(self,):
         # Menentukan dataset yang akan digunakan
         dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
+        train_dataset = None
+        test_dataset = None
 
+        # A. UNEVEN TRAINING DISTRIBUTION
+        # 1. Training 70% (85 SU, 75 R, 65 D, 55 A) & Testing 30%
+        if self.preprocessed_dir == "data/preprocessed/utd_70":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "uneven", train_percent = 70)
+        # 2. Training 80% (95 A, 85 D, 75 R, 65 SU) & Testing 20%
+        if self.preprocessed_dir == "data/preprocessed/utd_80":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "uneven", train_percent = 80)
+
+        # B. EQUITABLE TRAINING DISTRIBUTION
+        # 1. Training 60% (60 A, 60 D, 60 R, 60 SU) & Testing 40%
+        if self.preprocessed_dir == "data/preprocessed/etd_60":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "equitable", train_percent = 60)
+        # 2. Training 70% (70 A, 70 D, 70 R, 70 SU) & Testing 30%
+        if self.preprocessed_dir == "data/preprocessed/etd_70":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "equitable", train_percent = 70)
+        # 3. Training 80% (80 A, 80 D, 80 R, 80 SU) & Testing 20%
+        if self.preprocessed_dir == "data/preprocessed/etd_80":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "equitable", train_percent = 80)
+        # 4. Training 90% (90 A, 90 D, 90 R, 90 SU) & Testing 10%
+        if self.preprocessed_dir == "data/preprocessed/etd_90":
+            train_dataset, test_dataset = self.load_data_paper(path = "data/dataset_lyrics.xlsx", training_distribution = "equitable", train_percent = 90)
+
+        # Example + Generate Indonesian Lyrics
         if self.preprocessed_dir == "data/preprocessed/synthesized":
             dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
 
+        # Generate English Lyrics + Translation
         if self.preprocessed_dir == "data/preprocessed/generated":
             dataset = self.load_data(path = "data/generated_lyrics.xlsx")
 
+        # Generate Indonesian Lyrics
         if self.preprocessed_dir == "data/preprocessed/generated_2":
             dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
 
+        # Combination
         if self.preprocessed_dir == "data/preprocessed/full_combination":
             original = self.load_data(path = "data/dataset_lyrics.xlsx")
             synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
@@ -411,7 +496,7 @@ class PreprocessorClass(L.LightningDataModule):
             or not os.path.exists(f"{self.preprocessed_dir}/valid.pt") \
             or not os.path.exists(f"{self.preprocessed_dir}/test.pt"):
 
-            if self.preprocessed_dir == "data/preprocessed/split_combination":
+            if train_dataset is not None and test_dataset is not None:
                 train_data, valid_data = self.arrange_train_data(data = train_dataset)
                 test_data = self.arrange_test_data(data = test_dataset)
             else:
