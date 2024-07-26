@@ -21,8 +21,6 @@ def collect_parser():
     parser.add_argument("--train_data_dir", type=str, default="data/training.res")
     parser.add_argument("--test_data_dir", type=str, default="data/testing.res")
 
-    parser.add_argument("--train_decimal", type=str, default="0.8")
-
     return parser.parse_args()
 
 if __name__ == '__main__':
@@ -35,8 +33,7 @@ if __name__ == '__main__':
     dm = PreprocessorClass(
         preprocessed_dir = args.preprocessed_dir,
         batch_size = args.batch_size,
-        max_length = args.max_length,
-        train_decimal = args.train_decimal
+        max_length = args.max_length
     )
 
     model = MultiClassModel(

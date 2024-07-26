@@ -24,8 +24,7 @@ class PreprocessorClass(L.LightningDataModule):
     def __init__(self,
                  preprocessed_dir,
                  batch_size = 10,
-                 max_length = 100,
-                 train_decimal = 0.8):
+                 max_length = 100,):
 
         super(PreprocessorClass, self).__init__()
 
@@ -44,7 +43,6 @@ class PreprocessorClass(L.LightningDataModule):
 
         self.max_length = max_length
         self.preprocessed_dir = preprocessed_dir
-        self.train_decimal = train_decimal
 
         self.batch_size = batch_size
 
@@ -230,15 +228,10 @@ class PreprocessorClass(L.LightningDataModule):
         # Ratio Training 80% overall data = (90% Train, 10% Validation)
         # Ratio Testing 20% overall data
 
-        # train_val_len = int(x_input_ids.shape[0] * 0.8)   #100 * 0.8 = 80
-        # train_len = int(train_val_len * 0.9)    #80 * 0.9 = 72
-        # val_len = train_val_len - train_len #80 - 72 = 8
-        # test_len = x_input_ids.shape[0] - train_val_len   #100 - 80 = 20
-
-        train_val_len = int(x_input_ids.shape[0] * self.train_decimal)   #100 * x = 100x
-        train_len = int(train_val_len * 0.9)    #100x * 0.9 = 90x
-        val_len = train_val_len - train_len #100x - 90x = 10x
-        test_len = x_input_ids.shape[0] - train_val_len   #100 - 100x = ?
+        train_val_len = int(x_input_ids.shape[0] * 0.8)   #100 * 0.8 = 80
+        train_len = int(train_val_len * 0.9)    #80 * 0.9 = 72
+        val_len = train_val_len - train_len #80 - 72 = 8
+        test_len = x_input_ids.shape[0] - train_val_len   #100 - 80 = 20
 
         train_set, val_set, test_set = torch.utils.data.random_split(
             tensor_dataset,
