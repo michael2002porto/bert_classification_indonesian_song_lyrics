@@ -151,7 +151,7 @@ class PreprocessorClass(L.LightningDataModule):
 
         return training_set, testing_set
 
-    def arrange_data(self, data):
+    def arrange_data(self, data, train_decimal=0.8):
         # Yang di lakukan
         # 1. Cleaning sentence
         # 2. Tokenizing data
@@ -228,10 +228,15 @@ class PreprocessorClass(L.LightningDataModule):
         # Ratio Training 80% overall data = (90% Train, 10% Validation)
         # Ratio Testing 20% overall data
 
-        train_val_len = int(x_input_ids.shape[0] * 0.8)   #100 * 0.8 = 80
-        train_len = int(train_val_len * 0.9)    #80 * 0.9 = 72
-        val_len = train_val_len - train_len #80 - 72 = 8
-        test_len = x_input_ids.shape[0] - train_val_len   #100 - 80 = 20
+        # train_val_len = int(x_input_ids.shape[0] * 0.8)   #100 * 0.8 = 80
+        # train_len = int(train_val_len * 0.9)    #80 * 0.9 = 72
+        # val_len = train_val_len - train_len #80 - 72 = 8
+        # test_len = x_input_ids.shape[0] - train_val_len   #100 - 80 = 20
+
+        train_val_len = int(x_input_ids.shape[0] * train_decimal)   #100 * x = 100x
+        train_len = int(train_val_len * 0.9)    #100x * 0.9 = 90x
+        val_len = train_val_len - train_len #100x - 90x = 10x
+        test_len = x_input_ids.shape[0] - train_val_len   #100 - 100x = ?
 
         train_set, val_set, test_set = torch.utils.data.random_split(
             tensor_dataset,
@@ -440,6 +445,7 @@ class PreprocessorClass(L.LightningDataModule):
         dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
         train_dataset = None
         test_dataset = None
+        train_decimal = None
 
         # A. UNEVEN TRAINING DISTRIBUTION
         # 1. Training 70% (85 SU, 75 R, 65 D, 55 A) & Testing 30%
@@ -466,14 +472,32 @@ class PreprocessorClass(L.LightningDataModule):
         # Example + Generate Indonesian Lyrics
         if self.preprocessed_dir == "data/preprocessed/synthesized":
             dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
+        if self.preprocessed_dir == "data/preprocessed/synthesized_utd_70":
+            dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            train_decimal = 0.7
+        if self.preprocessed_dir == "data/preprocessed/synthesized_utd_80":
+            dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            train_decimal = 0.8
 
         # Generate English Lyrics + Translation
         if self.preprocessed_dir == "data/preprocessed/generated":
             dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+        if self.preprocessed_dir == "data/preprocessed/generated_utd_70":
+            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            train_decimal = 0.7
+        if self.preprocessed_dir == "data/preprocessed/generated_utd_80":
+            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            train_decimal = 0.8
 
         # Generate Indonesian Lyrics
         if self.preprocessed_dir == "data/preprocessed/generated_2":
             dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
+        if self.preprocessed_dir == "data/preprocessed/generated_2_utd_70":
+            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            train_decimal = 0.7
+        if self.preprocessed_dir == "data/preprocessed/generated_2_utd_80":
+            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            train_decimal = 0.8
 
         # Combination
         if self.preprocessed_dir == "data/preprocessed/full_combination":
@@ -482,6 +506,20 @@ class PreprocessorClass(L.LightningDataModule):
             generated = self.load_data(path = "data/generated_lyrics.xlsx")
             generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
             dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
+        if self.preprocessed_dir == "data/preprocessed/full_combination_utd_70":
+            original = self.load_data(path = "data/dataset_lyrics.xlsx")
+            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            generated = self.load_data(path = "data/generated_lyrics.xlsx")
+            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+            dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
+            train_decimal = 0.7
+        if self.preprocessed_dir == "data/preprocessed/full_combination_utd_80":
+            original = self.load_data(path = "data/dataset_lyrics.xlsx")
+            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            generated = self.load_data(path = "data/generated_lyrics.xlsx")
+            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+            dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
+            train_decimal = 0.8
 
         # Tidak perlu dipakai split_combination
         if self.preprocessed_dir == "data/preprocessed/split_combination":
@@ -500,7 +538,10 @@ class PreprocessorClass(L.LightningDataModule):
                 train_data, valid_data = self.arrange_train_data(data = train_dataset)
                 test_data = self.arrange_test_data(data = test_dataset)
             else:
-                train_data, valid_data, test_data = self.arrange_data(data = dataset)
+                if train_decimal is not None:
+                    train_data, valid_data, test_data = self.arrange_data(data = dataset, train_decimal = train_decimal)
+                else:
+                    train_data, valid_data, test_data = self.arrange_data(data = dataset)
 
             print("Successfully created training, validation, and testing datasets")
         else:
