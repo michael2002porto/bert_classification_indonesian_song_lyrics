@@ -478,6 +478,12 @@ class PreprocessorClass(L.LightningDataModule):
         if self.preprocessed_dir == "data/preprocessed/synthesized_utd_80":
             dataset = self.load_data(path = "data/synthesized_lyrics.xlsx")
             train_decimal = 0.8
+        if "data/preprocessed/synthesized_etd_" in self.preprocessed_dir:
+            train_dataset, test_dataset = self.load_data_paper(
+                path = "data/synthesized_lyrics.xlsx",
+                training_distribution = "equitable",
+                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+            )
 
         # Generate English Lyrics + Translation
         if self.preprocessed_dir == "data/preprocessed/generated":
@@ -488,16 +494,28 @@ class PreprocessorClass(L.LightningDataModule):
         if self.preprocessed_dir == "data/preprocessed/generated_utd_80":
             dataset = self.load_data(path = "data/generated_lyrics.xlsx")
             train_decimal = 0.8
+        if "data/preprocessed/generated_etd_" in self.preprocessed_dir:
+            train_dataset, test_dataset = self.load_data_paper(
+                path = "data/generated_lyrics.xlsx",
+                training_distribution = "equitable",
+                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+            )
 
         # Generate Indonesian Lyrics
         if self.preprocessed_dir == "data/preprocessed/generated_2":
             dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
         if self.preprocessed_dir == "data/preprocessed/generated_2_utd_70":
-            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
             train_decimal = 0.7
         if self.preprocessed_dir == "data/preprocessed/generated_2_utd_80":
-            dataset = self.load_data(path = "data/generated_lyrics.xlsx")
+            dataset = self.load_data(path = "data/generated_lyrics_2.xlsx")
             train_decimal = 0.8
+        if "data/preprocessed/generated_2_etd_" in self.preprocessed_dir:
+            train_dataset, test_dataset = self.load_data_paper(
+                path = "data/generated_lyrics_2.xlsx",
+                training_distribution = "equitable",
+                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+            )
 
         # Combination
         if self.preprocessed_dir == "data/preprocessed/full_combination":
