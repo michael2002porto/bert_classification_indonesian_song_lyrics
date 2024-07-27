@@ -93,20 +93,25 @@ class PreprocessorClass(L.LightningDataModule):
         
         return dataset
 
-    def load_data_paper(self, path="data/dataset_lyrics.xlsx", training_distribution="uneven", train_percent=80):
-        # Load the dataset
-        dataset = pd.read_excel(path)
-        dataset = dataset[["Title", "Lyric", "Age Class tag"]]
+    def load_data_paper(self, path="data/dataset_lyrics.xlsx", training_distribution="uneven", train_percent=80, dataset=None):
+        # Check dataset
+        if dataset is None:
+            # Load the dataset
+            dataset = pd.read_excel(path)
+            dataset = dataset[["Title", "Lyric", "Age Class tag"]]
+            # Convert from text labels to numerical IDs
+            dataset["Age Class tag"] = dataset["Age Class tag"].map(self.label2id)
 
-        # Convert from text labels to numerical IDs
-        dataset["Age Class tag"] = dataset["Age Class tag"].map(self.label2id)
+        # Mengetahui apa saja label setelah dikonversi
+        print(f"Dataset Before Splitting {train_percent}% (Training & Testing):")
+        print(dataset["Age Class tag"].value_counts())
 
         # Define the equitable training distribution based on the paper
         train_distribution = {
-            self.label2id['semua usia']: train_percent,
-            self.label2id['anak']: train_percent,
-            self.label2id['remaja']: train_percent,
-            self.label2id['dewasa']: train_percent
+            self.label2id['semua usia']: int(dataset["Age Class tag"].value_counts()[0] * train_percent / 100),
+            self.label2id['anak']: int(dataset["Age Class tag"].value_counts()[1] * train_percent / 100),
+            self.label2id['remaja']: int(dataset["Age Class tag"].value_counts()[2] * train_percent / 100),
+            self.label2id['dewasa']: int(dataset["Age Class tag"].value_counts()[3] * train_percent / 100)
         }
 
         # Define the uneven training distribution based on the paper
@@ -148,6 +153,7 @@ class PreprocessorClass(L.LightningDataModule):
         print(training_set["Age Class tag"].value_counts())
         print("\nTesting:")
         print(testing_set["Age Class tag"].value_counts())
+        # sys.exit()
 
         return training_set, testing_set
 
@@ -482,7 +488,7 @@ class PreprocessorClass(L.LightningDataModule):
             train_dataset, test_dataset = self.load_data_paper(
                 path = "data/synthesized_lyrics.xlsx",
                 training_distribution = "equitable",
-                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+                train_percent = int(self.preprocessed_dir[-2:]) # get last 2 digits then convert to int
             )
 
         # Generate English Lyrics + Translation
@@ -498,7 +504,7 @@ class PreprocessorClass(L.LightningDataModule):
             train_dataset, test_dataset = self.load_data_paper(
                 path = "data/generated_lyrics.xlsx",
                 training_distribution = "equitable",
-                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+                train_percent = int(self.preprocessed_dir[-2:]) # get last 2 digits then convert to int
             )
 
         # Generate Indonesian Lyrics
@@ -514,7 +520,7 @@ class PreprocessorClass(L.LightningDataModule):
             train_dataset, test_dataset = self.load_data_paper(
                 path = "data/generated_lyrics_2.xlsx",
                 training_distribution = "equitable",
-                train_percent = int(self.preprocessed_dir[-3:]) # get last 3 digits then convert to int
+                train_percent = int(self.preprocessed_dir[-2:]) # get last 2 digits then convert to int
             )
 
         # Combination
@@ -538,6 +544,17 @@ class PreprocessorClass(L.LightningDataModule):
             generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
             dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
             train_decimal = 0.8
+        if "data/preprocessed/full_combination_etd_" in self.preprocessed_dir:
+            original = self.load_data(path = "data/dataset_lyrics.xlsx")
+            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+            generated = self.load_data(path = "data/generated_lyrics.xlsx")
+            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+            dataset = pd.concat([original, synthesized, generated, generated_2], ignore_index=True)
+            train_dataset, test_dataset = self.load_data_paper(
+                dataset = dataset,
+                training_distribution = "equitable",
+                train_percent = int(self.preprocessed_dir[-2:]) # get last 2 digits then convert to int
+            )
 
         # Tidak perlu dipakai split_combination
         if self.preprocessed_dir == "data/preprocessed/split_combination":
