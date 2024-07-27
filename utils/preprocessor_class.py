@@ -167,7 +167,7 @@ class PreprocessorClass(L.LightningDataModule):
 
         # y = label
         x_input_ids, x_token_type_ids, x_attention_mask, y = [], [], [], []
-        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = "Preprocesing Song Lyrics"):
+        for row, data in tqdm(data.iterrows(), total = data.shape[0], desc = f"Preprocesing Song Lyrics (Training = {int(train_decimal * 100)}%)"):
             '''
                 'semua usia' = 0
                 'anak' = 1
