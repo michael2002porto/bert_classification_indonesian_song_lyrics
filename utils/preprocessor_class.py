@@ -556,12 +556,19 @@ class PreprocessorClass(L.LightningDataModule):
                 train_percent = int(self.preprocessed_dir[-2:]) # get last 2 digits then convert to int
             )
 
-        # Tidak perlu dipakai split_combination
-        if self.preprocessed_dir == "data/preprocessed/split_combination":
-            synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
-            generated = self.load_data(path = "data/generated_lyrics.xlsx")
-            generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
-            train_dataset = pd.concat([synthesized, generated, generated_2], ignore_index=True)
+        # Coba pakai split_combination (train_dataset = synthetic, test_dataset = original)
+        if "data/preprocessed/split_" in self.preprocessed_dir:
+            if any(keyword in self.preprocessed_dir for keyword in ["synthesized", "full_combination"]):
+                synthesized = self.load_data(path = "data/synthesized_lyrics.xlsx")
+                train_dataset = synthesized
+            if any(keyword in self.preprocessed_dir for keyword in ["generated_1", "full_combination"]):
+                generated = self.load_data(path = "data/generated_lyrics.xlsx")
+                train_dataset = generated
+            if any(keyword in self.preprocessed_dir for keyword in ["generated_2", "full_combination"]):
+                generated_2 = self.load_data(path = "data/generated_lyrics_2.xlsx")
+                train_dataset = generated_2
+            if "full_combination" in self.preprocessed_dir:
+                train_dataset = pd.concat([synthesized, generated, generated_2], ignore_index=True)
             test_dataset = self.load_data(path = "data/dataset_lyrics.xlsx")
 
         # Mengecek apakah data train, valid, dan test sudah di preprocessed
