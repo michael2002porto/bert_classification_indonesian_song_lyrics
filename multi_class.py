@@ -1,5 +1,6 @@
 import argparse
 import sys
+import os
 
 from utils.preprocessor_class import PreprocessorClass
 from models.multi_class_model import MultiClassModel
@@ -42,10 +43,11 @@ if __name__ == '__main__':
         lr = 1e-5   # 1e-3 = 0.0001
     )
 
+    get_model_name = os.path.basename(os.path.normpath(args.preprocessed_dir))
     trainer = L.Trainer(
         accelerator = args.accelerator,
         max_epochs = args.max_epochs,
-        default_root_dir = 'logs/indobert'
+        default_root_dir = f'logs/indobert/{get_model_name}'
     )
 
     # Ini bagian training 
