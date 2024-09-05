@@ -15,8 +15,12 @@ class MultiClassModel(L.LightningModule):
                  n_out,
                  lr,
                  hidden_size = 768,
-                 model_dim = 768,):
+                 model_dim = 768,
+                 learning_rate,):
         super(MultiClassModel, self).__init__()
+
+        # save all the hyperparameters
+        self.save_hyperparameters()
 
         # seed untuk weight
         torch.manual_seed(1) # Untuk GPU
