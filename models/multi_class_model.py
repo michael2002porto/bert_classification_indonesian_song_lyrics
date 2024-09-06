@@ -15,8 +15,7 @@ class MultiClassModel(L.LightningModule):
                  n_out,
                  lr,
                  hidden_size = 768,
-                 model_dim = 768,
-                 learning_rate,):
+                 model_dim = 768,):
         super(MultiClassModel, self).__init__()
 
         # save all the hyperparameters
@@ -172,9 +171,10 @@ class MultiClassModel(L.LightningModule):
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
+        metrics_loss = loss
         
         self.training_step_output.append(metrics)
-        self.log_dict(metrics, prog_bar = True, on_epoch = True)
+        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 
@@ -193,9 +193,10 @@ class MultiClassModel(L.LightningModule):
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
+        metrics_loss = loss
         
         self.validation_step_output.append(metrics)
-        self.log_dict(metrics, prog_bar = True, on_epoch = True)
+        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 
@@ -214,9 +215,10 @@ class MultiClassModel(L.LightningModule):
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
+        metrics_loss = loss
         
         self.test_step_output.append(metrics)
-        self.log_dict(metrics, prog_bar = True, on_epoch = True)
+        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 

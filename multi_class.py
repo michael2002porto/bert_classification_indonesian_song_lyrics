@@ -5,6 +5,9 @@ import os
 from utils.preprocessor_class import PreprocessorClass
 from models.multi_class_model import MultiClassModel
 
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from lightning.pytorch.loggers import CSVLogger
+
 import lightning as L
 
 def collect_parser():
@@ -37,17 +40,31 @@ if __name__ == '__main__':
         max_length = args.max_length
     )
 
-    model = MultiClassModel(
+    # Pre-training
+    # model = MultiClassModel(
+    #     n_out = 4,
+    #     dropout = 0.3,  # dropout tentuin sendiri
+    #     lr = 1e-5   # 1e-3 = 0.0001
+    # )
+
+    # Finetuning
+    model = MultiClassModel.load_from_checkpoint(
+        "logs/indobert/lightning_logs/epoch=99-step=12100.ckpt",
         n_out = 4,
         dropout = 0.3,  # dropout tentuin sendiri
-        lr = 1e-5   # 1e-3 = 0.0001
+        lr = 1e-5
     )
 
     get_model_name = os.path.basename(os.path.normpath(args.preprocessed_dir))
+
+    early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=0.00, patience=4, verbose=False, mode="min")
+    logger = CSVLogger("logs", name=get_model_name)
     trainer = L.Trainer(
         accelerator = args.accelerator,
         max_epochs = args.max_epochs,
-        default_root_dir = f'logs/indobert/{get_model_name}'
+        default_root_dir = f'logs/indobert/{get_model_name}',
+        callbacks=[early_stop_callback],
+        logger=logger
     )
 
     # Ini bagian training 
