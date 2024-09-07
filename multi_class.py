@@ -41,19 +41,19 @@ if __name__ == '__main__':
     )
 
     # Pre-training
-    # model = MultiClassModel(
-    #     n_out = 4,
-    #     dropout = 0.3,  # dropout tentuin sendiri
-    #     lr = 1e-5   # 1e-3 = 0.0001
-    # )
-
-    # Finetuning
-    model = MultiClassModel.load_from_checkpoint(
-        "logs/indobert/lightning_logs/epoch=99-step=12100.ckpt",
+    model = MultiClassModel(
         n_out = 4,
         dropout = 0.3,  # dropout tentuin sendiri
-        lr = 1e-5
+        lr = 1e-5   # 1e-3 = 0.0001
     )
+
+    # Fine-tuning
+    # model = MultiClassModel.load_from_checkpoint(
+    #     "logs/indobert/lightning_logs/epoch=99-step=12100.ckpt",
+    #     n_out = 4,
+    #     dropout = 0.3,  # dropout tentuin sendiri
+    #     lr = 1e-5
+    # )
 
     get_model_name = os.path.basename(os.path.normpath(args.preprocessed_dir))
 
