@@ -174,7 +174,7 @@ class MultiClassModel(L.LightningModule):
         metrics_loss = loss
         
         self.training_step_output.append(metrics)
-        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
+        self.log_dict({"train_loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 
@@ -196,7 +196,7 @@ class MultiClassModel(L.LightningModule):
         metrics_loss = loss
         
         self.validation_step_output.append(metrics)
-        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
+        self.log_dict({"val_loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 
@@ -218,7 +218,7 @@ class MultiClassModel(L.LightningModule):
         metrics_loss = loss
         
         self.test_step_output.append(metrics)
-        self.log_dict({"loss": metrics_loss}, prog_bar = True, on_epoch = True)
+        self.log_dict({"test_loss": metrics_loss}, prog_bar = True, on_epoch = True)
         
         return loss
 
