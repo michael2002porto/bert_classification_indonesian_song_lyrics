@@ -215,10 +215,9 @@ class MultiClassModel(L.LightningModule):
         
         metrics = self.benchmarking_step(pred = y_pred, target = y)     #tahu skor
         metrics["loss"] = loss
-        metrics_loss = loss
         
         self.test_step_output.append(metrics)
-        self.log_dict({"test_loss": metrics_loss}, prog_bar = True, on_epoch = True)
+        self.log_dict(metrics, prog_bar = True, on_epoch = True)
         
         return loss
 
