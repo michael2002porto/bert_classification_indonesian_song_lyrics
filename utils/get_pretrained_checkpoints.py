@@ -1,5 +1,6 @@
 import os
 import requests
+from tqdm import tqdm
 
 if __name__ == '__main__':
     # Create 'checkpoints' directory if it doesn't exist
@@ -21,12 +22,16 @@ if __name__ == '__main__':
         # Full path to save the file
         filepath = os.path.join("checkpoints", filename)
         
-        # Download the file
-        print(f"Downloading {filename}...")
-        r = requests.get(url)
+        # Send a GET request
+        response = requests.get(url, stream=True)
+        total_size = int(response.headers.get('content-length', 0))  # Get total file size
         
-        # Save the file in 'checkpoints/' directory
-        with open(filepath, 'wb') as f:
-            f.write(r.content)
-        
+        # Download and save the file with progress bar
+        with open(filepath, 'wb') as file:
+            # Set up the progress bar
+            with tqdm(total=total_size, unit='B', unit_scale=True, desc=filename, ncols=100) as pbar:
+                for data in response.iter_content(1024):  # Download in chunks of 1024 bytes
+                    file.write(data)
+                    pbar.update(len(data))  # Update the progress bar by the chunk size
+
         print(f"{filename} downloaded successfully!")
