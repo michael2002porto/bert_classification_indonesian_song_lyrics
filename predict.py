@@ -20,7 +20,7 @@ model.eval()
 
 # Define test lyric ["semua usia", "anak", "remaja", "dewasa"]
 test_lyric = "hidup ini adalah kesempatan. hidup ini untuk melayani tuhan. jangan sia-siakan waktu yang tuhan bri"
-# test_lyric = "Aku adalah anak gembalaSelalu riang serta gembiraKarena aku senang bekerjaTak pernah malas atau pun lengah"
+# test_lyric = "Aku adalah anak gembala Selalu riang serta gembira Karena aku senang bekerja Tak pernah malas atau pun lengah"
 # test_lyric = "Kala kupandang kerlip bintang nun jauh disanaSaat kudenger melodi cinta yang menggemaTerasa kembali gelora jiwa mudakuKarna tersentuh alunan lagu semerdu kopi dangdutApi asmara yang dahulu pernah membaraSemakin hangat bagai ciuman yang pertamaDetak jantungku seakan ikut iramaKarna terlena oleh pesona alunan kopi dangdut"
 # test_lyric = "Oh hip hip hura hura (hura hura)Aku suka dia (suka dia)Aku jatuh cinta (jatuh cinta)Dia menanti cinta bersemi di hati"
 
