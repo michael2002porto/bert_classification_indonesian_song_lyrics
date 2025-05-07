@@ -3,143 +3,158 @@ import numpy as np
 from transformers import BertTokenizer
 import shap
 from lime.lime_text import LimeTextExplainer
-
+import matplotlib.pyplot as plt
 from models.multi_class_model import MultiClassModel
+
+
+# Check for GPU availability
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
 
 # Load tokenizer
 tokenizer = BertTokenizer.from_pretrained('indolem/indobert-base-uncased')
 
-# Load final checkpoint
+# Load model on GPU if available
 model = MultiClassModel.load_from_checkpoint(
-    "final_checkpoints/original_split_synthesized.ckpt",
+    "final_checkpoint/original_split_synthesized.ckpt",
     n_out=4,
     dropout=0.3,
     lr=1e-5
-)
+).to(device).eval()
 
-# Ensure model is in evaluation mode
-model.eval()
-
-# Define test lyric ["semua usia", "anak", "remaja", "dewasa"]
-test_lyric = "hidup ini adalah kesempatan. hidup ini untuk melayani tuhan. jangan sia-siakan waktu yang tuhan bri"
-
-# Encode text for BERT
-encoding = tokenizer.encode_plus(
-    test_lyric,
-    add_special_tokens=True,
-    max_length=512,
-    return_token_type_ids=True,
-    padding="max_length",
-    return_attention_mask=True,
-    return_tensors='pt',
-)
-
-# Perform inference
-with torch.no_grad():
-    test_prediction = model(
-        encoding["input_ids"],
-        encoding["attention_mask"],
-        encoding["token_type_ids"]
-    )
-
-probabilities = torch.nn.functional.softmax(test_prediction, dim=1).cpu().numpy().flatten()
-
+# Define test lyric and age groups
+test_lyric = "Oh hip hip hura hura hura hura Aku suka dia suka dia Aku jatuh cinta jatuh cinta Dia menanti cinta bersemi di hati"
 age_groups = ["semua usia", "anak", "remaja", "dewasa"]
+
+# GPU-optimized prediction function
+def predict(texts, batch_size=4):  # Increased batch size for GPU
+    if isinstance(texts, str):
+        texts = [texts]
+    
+    # Process in batches
+    all_probs = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+        
+        encodings = tokenizer(
+            batch,
+            add_special_tokens=True,
+            max_length=512,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt"
+        ).to(device)
+        
+        with torch.no_grad():
+            outputs = model(
+                encodings["input_ids"],
+                encodings["attention_mask"],
+                encodings["token_type_ids"]
+            )
+            probs = torch.nn.functional.softmax(outputs, dim=1)
+            all_probs.append(probs.cpu().numpy())
+            
+        # Clear GPU cache
+        torch.cuda.empty_cache()
+    
+    return np.concatenate(all_probs)
+
+# Get prediction
+probabilities = predict(test_lyric)[0]
 predicted_class = np.argmax(probabilities)
 
-# Print prediction results
+# Print results
 print("==== Age Group Prediction ====")
-print(f"Input Lyric: {test_lyric}")
 print(f"Predicted Age Group: {age_groups[predicted_class]}")
 print("\nClass Probabilities:")
 for idx, label in enumerate(age_groups):
     print(f"{label}: {probabilities[idx]:.4f}")
 
-# SHAP Explanation with proper tokenization handling
-def custom_tokenizer(text):
-    return tokenizer.tokenize(text, add_special_tokens=True)
 
-def custom_detokenizer(tokens):
-    return tokenizer.convert_tokens_to_string(tokens)
+# GPU-aware LIME Implementation
+print("\n==== LIME Explanation ====")
+explainer_lime = LimeTextExplainer(class_names=age_groups)
 
-# Create SHAP masker with BERT-compatible settings
-masker = shap.maskers.Text(
-    tokenizer=custom_tokenizer,
-    mask_token=tokenizer.mask_token,
-    collapse_mask_token=False,
-    output_type="string",
-    decoder=custom_detokenizer
+exp = explainer_lime.explain_instance(
+    test_lyric,
+    lambda x: predict(x, batch_size=8),  # Larger batch for LIME
+    num_features=10,
+    num_samples=500,
+    labels=[predicted_class]  # Explicitly specify which class to explain
 )
+print(exp.available_labels())
+exp.show_in_notebook(text=True)
 
-# Create explainer with padding handling
-def padded_model_wrapper(texts):
-    # Tokenize with padding
-    encodings = tokenizer(
-        texts,
-        add_special_tokens=True,
-        max_length=512,
-        padding="max_length",
-        return_tensors="pt",
-        truncation=True
-    )
-    
-    # Move to model device
-    input_ids = encodings["input_ids"].to(model.device)
-    attention_mask = encodings["attention_mask"].to(model.device)
-    token_type_ids = encodings["token_type_ids"].to(model.device)
-    
-    # Get predictions
-    with torch.no_grad():
-        outputs = model(input_ids, attention_mask, token_type_ids)
-    
-    return outputs.cpu().numpy()
+print("Top influential words (LIME):")
+for feature, weight in exp.as_list(label=predicted_class):
+    print(f"{feature}: {weight:.4f}")
 
-explainer_shap = shap.Explainer(
-    padded_model_wrapper,
-    masker,
-    output_names=age_groups
-)
 
-# Generate explanation
-shap_values = explainer_shap([test_lyric])
-
-print("\n==== SHAP Explanation ====")
-shap.plots.text(shap_values[:, :, predicted_class], display=False)
-
-# LIME Explanation
-def predict_proba(texts):
-    encodings = []
-    for text in texts:
+# SHAP Implementation
+def f(word_list):
+    all_output = []
+    for text in word_list:
+        # Handle both string and numpy array inputs
+        if isinstance(text, np.ndarray):
+            text = str(text)
+            
         encoding = tokenizer.encode_plus(
             text,
             add_special_tokens=True,
             max_length=512,
-            padding="max_length",
-            return_tensors='pt',
-            return_attention_mask=True,
-            return_token_type_ids=True
+            padding='max_length',
+            truncation=True,
+            return_tensors=None
         )
-        encodings.append(encoding)
+        
+        ids = torch.tensor(encoding['input_ids']).unsqueeze(0).to(model.device)
+        mask = torch.tensor(encoding['attention_mask']).unsqueeze(0).to(model.device)
+        token_types = torch.tensor(encoding['token_type_ids']).unsqueeze(0).to(model.device)
+        
+        with torch.no_grad():
+            outputs = model(ids, mask, token_types)
+            probs = torch.nn.functional.softmax(outputs, dim=1).cpu().numpy()
+            all_output.append(probs[0])  # Take first item since we process one at a time
     
-    input_ids = torch.cat([e["input_ids"] for e in encodings]).to(model.device)
-    attention_mask = torch.cat([e["attention_mask"] for e in encodings]).to(model.device)
-    token_type_ids = torch.cat([e["token_type_ids"] for e in encodings]).to(model.device)
-    
-    with torch.no_grad():
-        outputs = model(input_ids, attention_mask, token_type_ids)
-    
-    return torch.nn.functional.softmax(outputs, dim=1).cpu().numpy()
+    return np.array(all_output)
 
-explainer_lime = LimeTextExplainer(class_names=age_groups)
-exp = explainer_lime.explain_instance(test_lyric, predict_proba, num_features=10, num_samples=500)
+# Create SHAP explainer with proper tokenizer handling
+explainer = shap.Explainer(
+    f,
+    masker=shap.maskers.Text(tokenizer=tokenizer, mask_token=tokenizer.mask_token),
+    algorithm="partition",
+    output_names=["semua usia", "anak", "remaja", "dewasa"]
+)
 
-print("\n==== LIME Explanation ====")
-print("Top features contributing to the prediction:")
-for feature, weight in exp.as_list():
-    print(f"{feature}: {weight:.4f}")
+shap_values = explainer([test_lyric])
 
-# CEM Note
-print("\n==== CEM Consideration ====")
-print("Counterfactual Explanations (CEM) require additional setup such as a trained autoencoder")
-print("or generative model to produce meaningful text counterfactuals. Consider using libraries")
-print("like ALIBI or TextAttack for advanced implementations.")
+print("\n==== SHAP Explanation ====")
+shap.plots.text(shap_values[:, :, predicted_class])
+
+shap.plots.text(shap_values)
+
+shap.plots.bar(shap_values[0, :, predicted_class], max_display=10)
+
+shap.plots.waterfall(shap_values[0, :, predicted_class], max_display=15)
+
+# Get tokens (filtering out special tokens)
+tokens = [token for token in tokenizer.tokenize(test_lyric) 
+          if token not in ['[CLS]', '[SEP]', '[PAD]']]
+valid_indices = [i for i, token in enumerate(tokenizer.tokenize(test_lyric)) 
+                if token not in ['[CLS]', '[SEP]', '[PAD]']]
+filtered_shap = shap_values[:, valid_indices, :]
+
+# 4. Manual Decision Plot (since explainer.expected_value is None)
+mean_prediction = probabilities.mean()  # Fallback base value
+plt.figure(figsize=(12, 6))
+shap.decision_plot(
+    base_value=mean_prediction,
+    shap_values=filtered_shap[0, :, predicted_class].values,
+    features=tokens,
+    feature_names=tokens,
+    ignore_warnings=True,
+    show=False
+)
+plt.title(f"Decision Process for '{age_groups[predicted_class]}' Prediction")
+plt.tight_layout()
+plt.show()
