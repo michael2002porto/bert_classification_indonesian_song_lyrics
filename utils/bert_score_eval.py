@@ -69,6 +69,8 @@ if __name__ == "__main__":
         synthetic_df = get_dataset("data/generated_lyrics.xlsx")
     else:
         synthetic_df = get_dataset("data/dataset_lyrics.xlsx")
+        # Proses kolom Lyric
+        synthetic_df["Lyric"] = synthetic_df["Lyric"].apply(split_by_capital)
 
     # Load human dataset
     human_df = get_dataset("data/dataset_lyrics.xlsx")
