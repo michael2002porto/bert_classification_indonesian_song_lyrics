@@ -63,10 +63,12 @@ if __name__ == "__main__":
     # Load synthetic dataset
     if args.synthetic_dataset == "zero_shot":
         synthetic_df = get_dataset("data/generated_lyrics_2.xlsx")
+    elif args.synthetic_dataset == "sample_based":
+        synthetic_df = get_dataset("data/synthesized_lyrics.xlsx")
     elif args.synthetic_dataset == "translation_based":
         synthetic_df = get_dataset("data/generated_lyrics.xlsx")
     else:
-        synthetic_df = get_dataset("data/synthesized_lyrics.xlsx")
+        synthetic_df = get_dataset("data/dataset_lyrics.xlsx")
 
     # Load human dataset
     human_df = get_dataset("data/dataset_lyrics.xlsx")
