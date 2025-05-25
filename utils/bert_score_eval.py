@@ -9,7 +9,7 @@ def collect_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--accelerator", type=str, default="cuda")
     parser.add_argument("--batch_size", type=int, default=100)
-    parser.add_argument("--synthetic_dataset", type=str, default="sample_based")
+    parser.add_argument("--synthetic_dataset", type=str, default="human_annotated")
     return parser.parse_args()
 
 
