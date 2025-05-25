@@ -7,6 +7,7 @@ from bert_score import score  # Library untuk menghitung BERTScore
 
 def collect_parser():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--accelerator", type=str, default="gpu")
     parser.add_argument("--synthetic_dataset", type=str, default="sample_based")
     return parser.parse_args()
 
@@ -104,7 +105,11 @@ if __name__ == "__main__":
 
         # Run BERTScore
         (P_all, R_all, F1_all), hashname = score(
-            expanded_candidates, expanded_references, lang="id", return_hash=True
+            expanded_candidates,
+            expanded_references,
+            lang="id",
+            return_hash=True,
+            device=args.accelerator,
         )
 
         # Group scores
