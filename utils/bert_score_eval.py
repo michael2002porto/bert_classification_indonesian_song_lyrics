@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import re
+from transformers import BertModel
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from bert_score import score  # Library untuk menghitung BERTScore
 
@@ -108,10 +109,14 @@ if __name__ == "__main__":
             )  # Duplicate 1 lirik synth untuk semua human
             expanded_references.extend(hum_group)  # Human tetap sama
 
+        # Load model (manual)
+        model = BertModel.from_pretrained("indolem/indobert-base-uncased")
+
         # Run BERTScore
         (P_all, R_all, F1_all), hashname = score(
             expanded_candidates,
             expanded_references,
+            model_type=model,
             lang="id",
             return_hash=True,
             device=args.accelerator,
@@ -141,9 +146,9 @@ if __name__ == "__main__":
 
         print(f"\n📂 Age Group: {group}")
         print(f"▶ Model Hash:         {hashname}")
-        print(f"▶ Avg Max Precision:  {sum(max_P)/len(max_P):.6f}")
-        print(f"▶ Avg Max Recall:     {sum(max_R)/len(max_R):.6f}")
-        print(f"▶ Avg Max F1:         {sum(max_F)/len(max_F):.6f}")
-        print(f"▶ Avg Mean Precision: {sum(mean_P)/len(mean_P):.6f}")
-        print(f"▶ Avg Mean Recall:    {sum(mean_R)/len(mean_R):.6f}")
-        print(f"▶ Avg Mean F1:        {sum(mean_F)/len(mean_F):.6f}")
+        print(f"▶ Avg Max Precision:  {sum(max_P)/len(max_P):.4f}")
+        print(f"▶ Avg Max Recall:     {sum(max_R)/len(max_R):.4f}")
+        print(f"▶ Avg Max F1:         {sum(max_F)/len(max_F):.4f}")
+        print(f"▶ Avg Mean Precision: {sum(mean_P)/len(mean_P):.4f}")
+        print(f"▶ Avg Mean Recall:    {sum(mean_R)/len(mean_R):.4f}")
+        print(f"▶ Avg Mean F1:        {sum(mean_F)/len(mean_F):.4f}")
