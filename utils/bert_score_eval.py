@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
 import re
-from transformers import BertModel
+# from transformers import BertModel
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from bert_score import score  # Library untuk menghitung BERTScore
 
@@ -110,13 +110,15 @@ if __name__ == "__main__":
             expanded_references.extend(hum_group)  # Human tetap sama
 
         # Load model (manual)
-        model = BertModel.from_pretrained("indolem/indobert-base-uncased")
+        # model = BertModel.from_pretrained("indolem/indobert-base-uncased")
+        # print(len(model.encoder.layer))  # biasanya 12
 
         # Run BERTScore
         (P_all, R_all, F1_all), hashname = score(
             expanded_candidates,
             expanded_references,
-            model_type=model,
+            model_type="indolem/indobert-base-uncased",
+            num_layers=12,  # Jumlah layer IndoBERT
             lang="id",
             return_hash=True,
             device=args.accelerator,
