@@ -1,6 +1,8 @@
 import argparse
 import pandas as pd
-from bert_score import score
+import re
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from bert_score import score  # Library untuk menghitung BERTScore
 
 
 def collect_parser():
@@ -11,12 +13,48 @@ def collect_parser():
 
 def get_dataset(path="data/dataset_lyrics.xlsx"):
     df = pd.read_excel(path)
-    df = df[["Title", "Lyric", "Age Class tag"]]
+    df = df[["Title", "Lyric", "Age Class tag"]]  # Ambil hanya kolom yang diperlukan
     return df
 
 
+def clean_str(string):
+    string = string.lower()
+    string = re.sub(r"[^A-Za-z0-9(),!?\'\-`]", " ", string)
+    string = re.sub(r"\'s", " 's", string)
+    string = re.sub(r"\'ve", " 've", string)
+    string = re.sub(r"n\'t", " n't", string)
+
+    # Menghapus enter
+    string = re.sub(r"\n", "", string)
+
+    # Membersihkan elemen yang tidak perlu, seperti menghapus spasi 2
+    string = re.sub(r"\'re", " 're", string)
+
+    # Mengecek digit atau bukan
+    string = re.sub(r"\'d", " 'd", string)
+
+    # Mengecek long atau bukan
+    string = re.sub(r"\'ll", " 'll", string)
+    string = re.sub(r",", " , ", string)
+    string = re.sub(r"!", " ! ", string)
+    string = re.sub(r"\(", " \( ", string)
+    string = re.sub(r"\)", " \) ", string)
+    string = re.sub(r"\?", " \? ", string)
+    string = re.sub(r"\s{2,}", " ", string)
+    string = string.strip()
+
+    # Menghilangkan imbuhan
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    return stemmer.stem(string)
+
+
+def split_by_capital(text):
+    return re.sub(r"(?<=[a-z])(?=[A-Z])", " ", text)
+
+
 if __name__ == "__main__":
-    args = collect_parser()
+    args = collect_parser()  # Ambil argumen CLI
 
     age_groups = ["anak", "remaja", "dewasa", "semua usia"]
 
@@ -30,16 +68,26 @@ if __name__ == "__main__":
 
     # Load human dataset
     human_df = get_dataset("data/dataset_lyrics.xlsx")
+    # Proses kolom Lyric
+    human_df["Lyric"] = human_df["Lyric"].apply(split_by_capital)
 
     # Group by age
     print(f"\n🔍 BERTScore model: Evaluating '{args.synthetic_dataset}' dataset")
 
     for group in age_groups:
-        syn_group = synthetic_df[synthetic_df["Age Class tag"] == group][
-            "Lyric"
-        ].tolist()
-        hum_group = human_df[human_df["Age Class tag"] == group]["Lyric"].tolist()
+        # Ambil lirik berdasarkan kelas umur
+        syn_group = (
+            synthetic_df[synthetic_df["Age Class tag"] == group]["Lyric"]
+            .apply(clean_str)
+            .tolist()
+        )
+        hum_group = (
+            human_df[human_df["Age Class tag"] == group]["Lyric"]
+            .apply(clean_str)
+            .tolist()
+        )
 
+        # Jika tidak ada data, skip
         if not syn_group or not hum_group:
             print(f"\n⚠️ Skipping age group '{group}' due to insufficient data.")
             continue
@@ -49,8 +97,10 @@ if __name__ == "__main__":
         expanded_references = []
 
         for synth in syn_group:
-            expanded_candidates.extend([synth] * len(hum_group))
-            expanded_references.extend(hum_group)
+            expanded_candidates.extend(
+                [synth] * len(hum_group)
+            )  # Duplicate 1 lirik synth untuk semua human
+            expanded_references.extend(hum_group)  # Human tetap sama
 
         # Run BERTScore
         (P_all, R_all, F1_all), hashname = score(
@@ -58,7 +108,7 @@ if __name__ == "__main__":
         )
 
         # Group scores
-        ref_len = len(hum_group)
+        ref_len = len(hum_group)  # Jumlah referensi
         grouped_P = [
             P_all[i * ref_len : (i + 1) * ref_len] for i in range(len(syn_group))
         ]
