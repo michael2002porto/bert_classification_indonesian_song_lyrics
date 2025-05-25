@@ -7,7 +7,7 @@ from bert_score import score  # Library untuk menghitung BERTScore
 
 def collect_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--accelerator", type=str, default="gpu")
+    parser.add_argument("--accelerator", type=str, default="cuda")
     parser.add_argument("--synthetic_dataset", type=str, default="sample_based")
     return parser.parse_args()
 
