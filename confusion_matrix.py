@@ -63,6 +63,19 @@ def plot_confusion_matrix(y_true, y_pred):
     plt.show()
 
 
+def plot_manual_confusion_matrix(y_true, y_pred):
+    cm = confusion_matrix(y_true, y_pred)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=label_names)
+    plt.figure(figsize=(8, 6))
+    disp.plot(cmap="Blues", values_format="d")
+    plt.title("Confusion Matrix - Expert Judgement")
+    plt.xlabel("Predicted Label (Prediksi Sistem)")
+    plt.ylabel("True Label (Expert Judgement)")
+    plt.grid(False)
+    plt.tight_layout()
+    plt.show()
+
+
 def evaluate_model(model, df):
     y_true, y_pred = [], []
     for _, row in df.iterrows():
@@ -97,18 +110,43 @@ def evaluate_model(model, df):
 
 
 if __name__ == "__main__":
-    # Load model
-    model = MultiClassModel.load_from_checkpoint(
-        "final_checkpoints/original_split_synthesized.ckpt",
-        n_out=4,
-        dropout=0.3,
-        lr=1e-5,
-    )
-    model.eval()
+    # # Load model
+    # model = MultiClassModel.load_from_checkpoint(
+    #     "final_checkpoints/original_split_synthesized.ckpt",
+    #     n_out=4,
+    #     dropout=0.3,
+    #     lr=1e-5,
+    # )
+    # model.eval()
 
-    # Load and preprocess data
-    df = get_dataset("data/dataset_lyrics.xlsx")
+    # # Load and preprocess data
+    # df = get_dataset("data/dataset_lyrics.xlsx")
 
-    # Evaluate and plot confusion matrix
-    y_true, y_pred = evaluate_model(model, df)
-    plot_confusion_matrix(y_true, y_pred)
+    # # Evaluate and plot confusion matrix
+    # y_true, y_pred = evaluate_model(model, df)
+    # plot_confusion_matrix(y_true, y_pred)
+
+    # Contoh prediksi sistem dan label sebenarnya dari expert judgement
+    y_true = [
+        0,              # semua usia → anak
+        0, 0, 0, 0, 0,  # semua usia → semua usia (5×)
+        1, 1, 1,        # anak → anak (3×)
+        1,              # anak → dewasa
+        2, 2, 2, 2,     # remaja → remaja (4×)
+        3,              # dewasa → anak
+        3,              # dewasa → remaja
+        3, 3, 3, 3,     # dewasa → dewasa (4×)
+    ]
+
+    y_pred = [
+        1,              # semua usia → anak
+        0, 0, 0, 0, 0,  # semua usia → semua usia (5×)
+        1, 1, 1,        # anak → anak (3×)
+        3,              # anak → dewasa
+        2, 2, 2, 2,     # remaja → remaja (4×)
+        1,              # dewasa → anak
+        2,              # dewasa → remaja
+        3, 3, 3, 3,     # dewasa → dewasa (4×)
+    ]
+
+    plot_manual_confusion_matrix(y_true, y_pred)
