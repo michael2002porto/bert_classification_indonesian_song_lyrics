@@ -44,19 +44,19 @@ if __name__ == '__main__':
     )
 
     # Pre-training
-    # model = MultiClassModel(
-    #     n_out = 4,
-    #     dropout = 0.3,  # dropout tentuin sendiri
-    #     lr = 1e-5   # 1e-3 = 0.0001
-    # )
-
-    # Fine-tuning
-    model = MultiClassModel.load_from_checkpoint(
-        args.pretrained_checkpoint,
+    model = MultiClassModel(
         n_out = 4,
         dropout = 0.3,  # dropout tentuin sendiri
-        lr = 1e-5
+        lr = 1e-5   # 1e-3 = 0.0001
     )
+
+    # Fine-tuning
+    # model = MultiClassModel.load_from_checkpoint(
+    #     args.pretrained_checkpoint,
+    #     n_out = 4,
+    #     dropout = 0.3,  # dropout tentuin sendiri
+    #     lr = 1e-5
+    # )
 
     model_name = args.model_name if args.model_name else os.path.basename(os.path.normpath(args.preprocessed_dir))
 
