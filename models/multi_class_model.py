@@ -7,7 +7,7 @@ import torch.nn as nn
 import lightning as L
 
 from transformers import BertModel
-from torchmetrics.classification import F1Score, Accuracy, Precision, Recall
+from torchmetrics.classification import F1Score, Accuracy, Precision, Recall, CohenKappa
 
 class MultiClassModel(L.LightningModule):
     def __init__(self,
@@ -108,6 +108,8 @@ class MultiClassModel(L.LightningModule):
         self.recall_metrics_macro = Recall(task = task, num_classes = self.num_classes, average = "macro")
         self.recall_metrics_weighted = Recall(task = task, num_classes = self.num_classes, average = "weighted")
 
+        self.kappa_metrics = CohenKappa(task = task, num_classes = self.num_classes)
+
         # to make use of all the outputs
         self.training_step_output = []
         self.validation_step_output = []
@@ -141,6 +143,7 @@ class MultiClassModel(L.LightningModule):
         metrics["recall_micro"] = self.recall_metrics_micro(pred, target)
         metrics["recall_macro"] = self.recall_metrics_macro(pred, target)
         metrics["recall_weighted"] = self.recall_metrics_weighted(pred, target)
+        metrics["kappa"] = self.kappa_metrics(pred, target)
         
         return metrics
 
