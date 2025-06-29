@@ -66,7 +66,7 @@ if __name__ == '__main__':
         accelerator = args.accelerator,
         max_epochs = args.max_epochs,
         default_root_dir = f'logs/indobert/{model_name}',
-        callbacks=[early_stop_callback],
+        # callbacks=[early_stop_callback],
         logger=logger
     )
 
